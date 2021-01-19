@@ -1,0 +1,27 @@
+[mysqld]
+#max_connections=350
+log-bin=/var/log/mysql/mysql-bin
+log-bin-index=/var/log/mysql/mysql-bin.index
+binlog-format = 'ROW'
+default-storage-engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_rollback_on_timeout=1
+innodb_lock_wait_timeout=600
+# не меняйте значение этой переменной при использовании Galera
+innodb_doublewrite=1
+# для ускорения операций
+# позволяет не ждать синхронизации с FS
+# для большей безопасности можно установить в "1"
+innodb_flush_log_at_trx_commit=0
+bind-address=0.0.0.0
+# Galera Provider Configuration
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+wsrep_cluster_address="gcomm://node1,node2,node3"
+wsrep_on=ON
+# Galera Cluster Configuration
+wsrep_cluster_name="galera_cluster"
+# Galera Synchronization Configuration
+wsrep_sst_method=rsync
+# Galera Node Configuration
+# wsrep_node_address="10.21.80.10"
+wsrep_node_name="node2"

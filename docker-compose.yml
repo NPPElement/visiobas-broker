@@ -1,0 +1,224 @@
+# Docker-compose
+version: '3.7'
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.16.0/24
+          gateway: 172.16.16.1
+          ip_range: 172.16.0.0/24
+
+services:
+
+  nginx:
+    image: jwilder/nginx-proxy:latest
+    container_name: proxy
+    volumes:
+      - ./conf/nginx/www:/usr/share/nginx/html
+      - ./conf/nginx/conf:/etc/nginx/conf.d
+      - ./conf/nginx/dhparam:/etc/nginx/dhparam
+      - ./conf/nginx/vhost:/etc/nginx/vhost.d
+      - ./conf/nginx/certs:/etc/nginx/certs
+      - /run/docker.sock:/tmp/docker.sock:ro
+    restart: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - backend
+
+  rabbit1:
+    image: rabbitmq:3-management
+    hostname: rabbit1
+    container_name: rabbit1
+    restart: always
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: "/manager/rabbit/"
+    ports:
+      - 1883:1883
+      - 8883:8883
+    user: root
+    networks:
+      - backend
+    volumes:
+      - ./conf/rabbit/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./data/rabbit:/var/lib/rabbitmq
+      - ./log/rabbit:/var/log/rabbitmq
+
+  portainer:
+    image:  portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=broker
+    networks:
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
+
+  node1:
+    image: mariadb:10.5
+    hostname: node1
+    container_name: node1
+    user: root
+    ports:
+      - 3306:3306
+    networks:
+      backend:
+        ipv4_address: 172.16.16.51
+    environment:
+      - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./conf/mysql/node1.cnf:/etc/mysql/conf.d/galera.cnf
+      - ./conf/mysql/sql-files:/opt
+      - ./data/mysql:/var/lib/mysql
+      - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
+    command: 
+      - --wsrep-new-cluster
+
+  # node2:
+  #   image: mariadb:10.5
+  #   hostname: node2
+  #   container_name: node2
+  #   links:
+  #     - node1
+  #   networks:
+  #     - backend
+  #      ipv4_address: 172.16.16.52
+  #   environment:
+  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #   volumes:
+  #     - ./conf/mysql/node2.cnf:/etc/mysql/conf.d/galera.cnf
+        
+  # node3:
+  #   image: mariadb:10.5
+  #   hostname: node3
+  #   container_name: node3
+  #   links:
+  #     - node1
+  #   networks:
+  #     - backend
+  #     ipv4_address: 172.16.16.53
+  #   environment:
+  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #   volumes:
+  #     - ./conf/mysql/node3.cnf:/etc/mysql/conf.d/galera.cnf
+
+  # dbclient:
+  #   image: alpine
+  #   environment:
+  #     - BACKUP_ENABLED=1
+  #     - BACKUP_INTERVAL=3600
+  #     - BACKUP_PATH=/data
+  #     - BACKUP_FILENAME=db_backup
+  #   networks:
+  #     - backend
+  #   entrypoint: |
+  #     sh -c 'sh -s << EOF
+  #     apk add --no-cache mysql-client
+  #     while true
+  #       do
+  #         if [ $$BACKUP_ENABLED == 1 ]
+  #           then
+  #             sleep $$BACKUP_INTERVAL
+  #             mkdir -p $$BACKUP_PATH/$$(date +%F)
+  #             echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
+  #             mysqldump -u root -ppassword -h dblb --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
+  #             find $$BACKUP_PATH -mtime 7 -delete
+  #         fi
+  #       done
+  #     EOF'
+  #   volumes:
+  #     - ./home/mysql:/data
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+    - PMA_ARBITRARY=1
+    restart: always
+    networks:
+      - backend
+    volumes:
+     - /sessions
+
+  webdav:
+    image: jboss/wildfly
+    hostname: webdav
+    container_name: webdav
+    restart: always
+    user: root
+    environment:
+      - WILDFLY_PUBLIC_CONSOLE=1
+      - WILDFLY_USERNAME=admin
+      - WILDFLY_PASSWORD=admin
+      - WILDFLY_NAME=wildfly
+      #- CLUSTER_PW=admin
+      - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
+      - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
+    networks:
+      - backend
+    ports:
+      - 9991:9990
+    command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
+    #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
+    volumes: 
+      - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./conf/webdav:/opt/webdav
+      - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
+
+  visiodesk:
+    image: jboss/wildfly
+    hostname: visiodesk
+    container_name: visiodesk
+    restart: always
+    user: root
+    links:
+      - node1
+    environment:
+      - WILDFLY_PUBLIC_CONSOLE=1
+      - WILDFLY_USERNAME=admin
+      - WILDFLY_PASSWORD=admin
+      - WILDFLY_NAME=wildfly
+      - WILDFLY_HOST=visiodesk.net
+     # - CLUSTER_PW=admin
+    ports:
+      - 9990:9990
+    networks:
+      backend:
+        ipv4_address: 172.16.16.50
+    command: >
+         bash -c "/opt/jboss/wildfly/bin/add-user.sh $$WILDFLY_USERNAME $$WILDFLY_PASSWORD --silent
+         && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
+    #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
+    volumes: 
+      - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
+      - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
+      - ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
+      - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
+      - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+      - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
