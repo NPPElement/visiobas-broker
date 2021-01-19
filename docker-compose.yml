@@ -77,14 +77,16 @@ services:
     environment:
       #- REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
       - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - VISIODESK_ADMIN_PASSWORD=${VISIODESK_ADMIN_PASSWORD}
     volumes:
       - ./conf/mysql/node1.cnf:/etc/mysql/conf.d/galera.cnf
       - ./conf/mysql/sql-files:/opt
       - ./data/mysql:/var/lib/mysql
-      - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
+      #- ./conf/mysql/init-files:/docker-entrypoint-initdb.d
+      - ./conf/mysql/init-files:/opt
     command: 
       - --wsrep-new-cluster
 

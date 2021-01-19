@@ -26,9 +26,14 @@ sudo sh install.sh
 ```
 Проведите установку сертификата
 ```
-# sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
-# sudo docker restart visiodesk
+sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+sudo docker restart visiodesk
 ```
+Установите начальные данные
+```
+sudo docker exec -it node1 sh /opt/init.sh
+```
+
 Система установлена!
 
 ## WEB visiodesk

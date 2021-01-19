@@ -50,6 +50,7 @@ sh start.sh
 echo ' '
 echo '************************************'
 echo '     Visiodesk установлен!!!'
+echo '                                    '
 echo 'Откройте web интерфейс по адресу:   '
 echo 'http://yousite/ или https://yousite/'
 echo '************************************'
