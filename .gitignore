@@ -1,0 +1,7 @@
+.DS_Store
+/opt/services/conf/visiodesk/welcome-content
+/opt/services/data
+/opt/services/log
+env
+*.war.deployed
+.DS_Store
