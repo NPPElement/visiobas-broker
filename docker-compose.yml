@@ -222,3 +222,6 @@ services:
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
+      - /opt/webdav/svg:/opt/jboss/wildfly/welcome-content/svg
+      - /opt/files:/opt/jboss/wildfly/welcome-content/files
+      - /opt/stub:/opt/jboss/wildfly/welcome-content/stub
