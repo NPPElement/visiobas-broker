@@ -1,17 +1,25 @@
 #!/bin/bash
 echo ' '
 echo '********************'
-echo '  Update containers'
+echo '  Update visiodesk  '
 echo '********************'
 echo ' '
 
-sudo git pull
+export COMPOSE_HTTP_TIMEOUT=200
+
+# Останавливаем сервер
 sudo docker-compose down
 
-export COMPOSE_HTTP_TIMEOUT=200
+# Обновляем сервер 
+cd /opt/services/
+sudo git pull
 
 # Удалим все образы
 sudo docker images -a | xargs -n 1 -I {} sudo docker rmi -f {}
+
+# Обновим клиента
+cd /opt/services/conf/visiodesk/welcome-content
+sudo git pull
 
 # Загрузим образы из архива в среду Docker
 cd /opt/services/conf/containers
