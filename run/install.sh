@@ -13,15 +13,19 @@ sudo apt --assume-yes install docker docker.io
 sudo apt --assume-yes install htop mc 
 sudo apt --assume-yes install git jq
 
-#VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+# Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
-
 sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 $DESTINATION
+#VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
-
 
 sudo chmod 755 $DESTINATION
 docker-compose --version
+
+# Установка контейнеров
+mkdir /opt/services/conf/containers/
+cd /opt/services/conf/containers/
+sudo wget -L http://cloud.visiodesk.ru/containers/visiodesk-server.tar
 
 # Установка клиента visiodesk в директорию /opt/services/conf/visiodesk/
 cd /opt/services/conf/visiodesk/
@@ -44,13 +48,14 @@ cd /opt/services/
 sudo cp -f template-env .env
 sudo rm -R template-env
 
-# Запускаем сервер  
-cd /opt/services/run
-sh start.sh
-
 # Сохраним все контейнеры в локальное хранилище
-cd /opt/services/conf/containers/
-docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
+# cd /opt/services/conf/containers/
+# docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
+
+# Запускаем контейнеры
+cd /opt/services
+docker load -i /opt/services/conf/containers/visiodesk-server.tar
+sudo docker-compose up -d --force-recreate
 
 # Visiodesk установлен
 echo ' '
