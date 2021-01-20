@@ -26,7 +26,7 @@ docker-compose --version
 # Установка контейнеров
 mkdir /opt/services/conf/containers/
 cd /opt/services/conf/containers/
-sudo wget -L http://cloud.visiodesk.ru/containers/visiodesk-server.tar
+#sudo wget -L http://cloud.visiodesk.ru/containers/visiodesk-server.tar
 
 # Установка клиента visiodesk в директорию /opt/services/conf/visiodesk/
 cd /opt/services/conf/visiodesk/
@@ -54,17 +54,16 @@ sudo rm -R template-env
 # docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
 
 # Установка сертификата
-cd /opt/services/conf/visiodesk/ssl
-keytool -genkeypair   -keystore application.keystore   -alias server   -keyalg RSA   -keysize 3072   -validity 36500  -storepass password  -keypass password  -dname "CN=localhost, OU=QE, O=$$WILDFLY_HOST, L=Brno, C=CZ"
+#cd /opt/services/conf/visiodesk/ssl
+#keytool -genkeypair   -keystore application.keystore   -alias server   -keyalg RSA   -keysize 3072   -validity 36500  -storepass password  -keypass password  -dname "CN=localhost, OU=QE, O=$$WILDFLY_HOST, L=Brno, C=CZ"
 
 # Запускаем контейнеры
 cd /opt/services
-docker load -i /opt/services/conf/containers/visiodesk-server.tar
+#docker load -i /opt/services/conf/containers/visiodesk-server.tar
 #sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
-
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
-# sudo docker restart visiodesk
+#sudo docker restart visiodesk
 
 # Visiodesk установлен
 echo ' '
