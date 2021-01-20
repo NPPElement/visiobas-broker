@@ -10,6 +10,6 @@ mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD < /opt/insert.sql
 
 # Устанавливаем пароли
 mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD 
-update `auth`.`user` set pass_hash=md5('$VISIODESK_ADMIN_PASSWORD') where `login`='admin';
-update `vdesk`.`user` set pass_hash=md5('$VISIODESK_ADMIN_PASSWORD') where `login`='admin';
+update `auth`.`user` set `password`=md5('$VISIODESK_ADMIN_PASSWORD') where `login`='admin';
+update `vdesk`.`user` set `pass_hash`=md5('$VISIODESK_ADMIN_PASSWORD') where `login`='admin';
 exit;
