@@ -64,7 +64,10 @@ sudo docker-compose up -d --force-recreate
 
 # Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+sleep 20
+
 sudo docker restart visiodesk
+sleep 30
 
 # Visiodesk установлен
 echo ' '
