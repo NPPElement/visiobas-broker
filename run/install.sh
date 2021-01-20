@@ -57,6 +57,9 @@ cd /opt/services
 docker load -i /opt/services/conf/containers/visiodesk-server.tar
 sudo docker-compose up -d --force-recreate
 
+sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+sudo docker restart visiodesk
+
 # Visiodesk установлен
 echo ' '
 echo '************************************'
