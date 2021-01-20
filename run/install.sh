@@ -15,10 +15,10 @@ sudo apt --assume-yes install git jq
 
 # Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
-#sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 -o $DESTINATION
-VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 -o $DESTINATION
+#VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
-sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
+#sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
 sudo chmod 755 $DESTINATION
 docker-compose --version
 
@@ -61,6 +61,8 @@ cd /opt/services
 #docker load -i /opt/services/conf/containers/visiodesk-server.tar
 #sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
+
+# Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
 sudo docker restart visiodesk
 
