@@ -36,10 +36,10 @@ cd /opt/services/conf/visiodesk/
 git clone https://github.com/NPPElement/visiodesk-client.git welcome-content
 
 # Создаем папки для файлов
-mkdir /opt/files
-mkdir /opt/stub
-mkdir /opt/webdav
-mkdir /opt/webdav/svg
+mkdir /opt/services/conf/visiodesk/welcome-content/stub
+mkdir /opt/services/conf/visiodesk/welcome-content/files
+mkdir /opt/services/conf/visiodesk/welcome-content/svg
+mkdir /opt/services/conf/visiodesk/welcome-content/svg/tiles
 
 # Установка шлюза visiobas в директорию /opt/services/conf/gateway/
 cd /opt
