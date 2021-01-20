@@ -85,8 +85,8 @@ services:
       - ./conf/mysql/node1.cnf:/etc/mysql/conf.d/galera.cnf
       - ./conf/mysql/sql-files:/opt
       - ./data/mysql:/var/lib/mysql
-      #- ./conf/mysql/init-files:/docker-entrypoint-initdb.d
-      - ./conf/mysql/init-files:/opt
+      - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
+      #- ./conf/mysql/init-files:/opt/init-files
     command: 
       - --wsrep-new-cluster
 
