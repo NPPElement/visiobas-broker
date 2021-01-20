@@ -12,6 +12,7 @@ sudo apt --assume-yes upgrade
 sudo apt --assume-yes install docker docker.io 
 sudo apt --assume-yes install htop mc 
 sudo apt --assume-yes install git jq
+sudo apt --assume-yes install keytool
 
 # Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
@@ -62,7 +63,7 @@ docker load -i /opt/services/conf/containers/visiodesk-server.tar
 #sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
 
-# sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
 # sudo docker restart visiodesk
 
 # Visiodesk установлен
