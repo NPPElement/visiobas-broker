@@ -1,3 +1,6 @@
+SET foreign_key_checks = 0;
+
+use `auth`;
 
 INSERT INTO `role` (`id`, `name`, `description`, `parent`) VALUES
 	(1, 'user', 'Пользователь', NULL),
@@ -35,6 +38,7 @@ INSERT INTO auth.role_user (role_id,user_id) SELECT id as role_id, 3 as user_id 
 INSERT INTO auth.role_user (role_id,user_id) SELECT id as role_id, 4 as user_id FROM auth.role;
 
 
+use `vbas`;
 
 INSERT INTO `reliability` (`id`, `name`, `description`) VALUES
 	(0, 'no-fault-detected', 'No fault detected'),
@@ -54,6 +58,8 @@ INSERT INTO `reliability` (`id`, `name`, `description`) VALUES
 	(14, 'monitored-object-fault', 'Monitored object fault'),
 	(15, 'tripped', 'Tripped');
 
+
+use `vdesk`;
 
 
 INSERT INTO `access_rights` (`id`, `name`, `full_name`) VALUES
