@@ -12,7 +12,6 @@ sudo apt --assume-yes upgrade
 sudo apt --assume-yes install docker docker.io 
 sudo apt --assume-yes install htop mc 
 sudo apt --assume-yes install git jq
-sudo apt --assume-yes install keytool
 
 # Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
@@ -20,7 +19,6 @@ DESTINATION=/usr/bin/docker-compose
 VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
 sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
-
 sudo chmod 755 $DESTINATION
 docker-compose --version
 
