@@ -38,7 +38,7 @@ sudo cp -R /opt/temp/gateway /opt/services/conf/
 sudo rm -R /opt/temp/
 
 # Создадим файл с начальными паролями к приложениям
-sudo cd /opt/services/
+cd /opt/services/
 sudo cp -f template-env .env
 sudo rm -R template-env
 
@@ -46,10 +46,16 @@ sudo rm -R template-env
 cd /opt/services/run
 sh start.sh
 
+# Сохраним все контейнеры в локальное хранилище
+cd /opt/services/conf/containers/
+docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
+
 # Visiodesk установлен
 echo ' '
 echo '************************************'
 echo '     Visiodesk установлен!!!'
+echo '                                    '
+echo 'Установите сертификат и лицензии *  '
 echo '                                    '
 echo 'Откройте web интерфейс по адресу:   '
 echo 'http://yousite/ или https://yousite/'
