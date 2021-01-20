@@ -17,7 +17,6 @@ VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/lat
 DESTINATION=/usr/bin/docker-compose
 
 sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
-
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
 
 
