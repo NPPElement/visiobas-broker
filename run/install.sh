@@ -13,10 +13,10 @@ sudo apt --assume-yes install docker docker.io
 sudo apt --assume-yes install htop mc 
 sudo apt --assume-yes install git jq
 
-VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+#VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 DESTINATION=/usr/bin/docker-compose
 
-sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
+sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 $DESTINATION
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
 
 
