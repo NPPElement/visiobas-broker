@@ -190,7 +190,7 @@ services:
     volumes: 
       - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
-      - ./conf/webdav/visiodesk/welcome-content/svg:/opt/webdav/webdav-files
+      - ./conf/visiodesk/welcome-content/svg:/opt/webdav/webdav-files
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   visiodesk:
