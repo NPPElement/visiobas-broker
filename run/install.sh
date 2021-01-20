@@ -15,7 +15,7 @@ sudo apt --assume-yes install git jq
 
 # Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
-sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 $DESTINATION
+sudo curl -L http://cloud.visiodesk.ru/containers/docker-compose-Linux-x86_64 -o $DESTINATION
 #VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 #sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION
 
