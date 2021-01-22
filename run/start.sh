@@ -4,7 +4,7 @@ export COMPOSE_HTTP_TIMEOUT=200
 spinner()
 {
     local pid=$1
-    local delay=0.5
+    local delay=0.25
     local spinstr='|/-\'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
@@ -28,7 +28,7 @@ cd /opt/services
 #sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
 
-echo -n 'visiodesk запускается '; (sleep 60) & spinner $!
+echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
 
 
 # Visiodesk запущен
