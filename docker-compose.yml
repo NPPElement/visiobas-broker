@@ -91,6 +91,8 @@ services:
 
 # Кластер
   master:
+    hostname: master
+    container_name: master
     image: mariadb:10.5
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
@@ -101,6 +103,8 @@ services:
       - "4001:3306"
 
   slave1:
+    hostname: slave1
+    container_name: slave1
     image: mariadb:10.5
     depends_on:
       - master
@@ -113,6 +117,8 @@ services:
       - "4002:3306"
 
   slave2:
+    hostname: slave2
+    container_name: slave2
     image: mariadb:10.5
     depends_on:
       - master
