@@ -186,7 +186,6 @@ services:
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
     networks:
-      networks:
       - backend
     entrypoint: |
       sh -c 'sh -s << EOF
