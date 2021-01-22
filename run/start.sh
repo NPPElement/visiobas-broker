@@ -28,7 +28,7 @@ cd /opt/services
 #sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
 
-spinner 3000
+(sleep 10) & spinner $!
 
 # Visiodesk запущен
 echo ' '
