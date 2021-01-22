@@ -107,23 +107,23 @@ services:
     volumes:
       - ./conf/mysql/node2.cnf:/etc/mysql/conf.d/galera.cnf
         
-  # node3:
-  #   image: mariadb:10.5
-  #   hostname: node3
-  #   container_name: node3
-  #   links:
-  #     - node1
-  #   networks:
-  #     - backend
-  #     ipv4_address: 172.16.16.53
-  #   environment:
-  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #   volumes:
-  #     - ./conf/mysql/node3.cnf:/etc/mysql/conf.d/galera.cnf
+  node3:
+    image: mariadb:10.5
+    hostname: node3
+    container_name: node3
+    links:
+      - node1
+    networks:
+      backend:
+       ipv4_address: 172.16.16.53
+    environment:
+      - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./conf/mysql/node3.cnf:/etc/mysql/conf.d/galera.cnf
 
   # dbclient:
   #   image: alpine
