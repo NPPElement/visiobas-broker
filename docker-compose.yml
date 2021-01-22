@@ -96,7 +96,7 @@ services:
     links:
       - node1
     networks:
-      - backend
+      backend:
        ipv4_address: 172.16.16.52
     environment:
       - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
