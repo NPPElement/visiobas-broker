@@ -75,7 +75,7 @@ services:
       backend:
         ipv4_address: 172.16.16.51
     environment:
-      #- REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+      - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
       - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
@@ -86,27 +86,26 @@ services:
       - ./conf/mysql/sql-files:/opt
       - ./data/mysql:/var/lib/mysql
       - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
-      #- ./conf/mysql/init-files:/opt/init-files
     command: 
       - --wsrep-new-cluster
 
-  # node2:
-  #   image: mariadb:10.5
-  #   hostname: node2
-  #   container_name: node2
-  #   links:
-  #     - node1
-  #   networks:
-  #     - backend
-  #      ipv4_address: 172.16.16.52
-  #   environment:
-  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #   volumes:
-  #     - ./conf/mysql/node2.cnf:/etc/mysql/conf.d/galera.cnf
+  node2:
+    image: mariadb:10.5
+    hostname: node2
+    container_name: node2
+    links:
+      - node1
+    networks:
+      - backend
+       ipv4_address: 172.16.16.52
+    environment:
+      - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./conf/mysql/node2.cnf:/etc/mysql/conf.d/galera.cnf
         
   # node3:
   #   image: mariadb:10.5
@@ -226,6 +225,4 @@ services:
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
       - ./conf/visiodesk/configuration/application.keystore:/opt/jboss/wildfly/standalone/configuration/application.keystore
-
-
 
