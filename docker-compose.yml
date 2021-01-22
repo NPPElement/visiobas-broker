@@ -219,9 +219,13 @@ services:
     #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
     volumes: 
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
-      - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
       - ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
-      - ./conf/visiodesk/configuration:/opt/jboss/wildfly/standalone/configuration
+      - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
+      - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+      - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
+      - ./conf/visiodesk/configuration/application.keystore:/opt/jboss/wildfly/standalone/configuration/application.keystore
+
+
 
