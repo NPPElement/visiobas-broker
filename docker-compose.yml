@@ -89,94 +89,62 @@ services:
     command: 
       - --wsrep-new-cluster
 
-  # node2:
-  #   image: mariadb:10.5
-  #   hostname: node2
-  #   container_name: node2
-  #   links:
-  #     - node1
-  #   networks:
-  #     backend:
-  #      ipv4_address: 172.16.16.52
-  #   environment:
-  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #   volumes:
-  #     - ./conf/mysql/node2.cnf:/etc/mysql/conf.d/galera.cnf
-        
-  # node3:
-  #   image: mariadb:10.5
-  #   hostname: node3
-  #   container_name: node3
-  #   links:
-  #     - node1
-  #   networks:
-  #     backend:
-  #      ipv4_address: 172.16.16.53
-  #   environment:
-  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #   volumes:
-  #     - ./conf/mysql/node3.cnf:/etc/mysql/conf.d/galera.cnf
-
-  mariadb-galera:
-    image: docker.io/bitnami/mariadb-galera:10.5-debian-10
-    ports:
-      - 3307:3306
-      - 4444:4444
-      - 4567:4567
-      - 4568:4568
+  # Кластер
+  master:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
     volumes:
-      - ./data/mariadb_galera:/bitnami/mariadb
-    user: root
-    environment:
-      - MARIADB_ROOT_PASSWORD=root-password
-      - MARIADB_GALERA_MARIABACKUP_PASSWORD=backup-password
-      - MARIADB_USER=user01
-      - MARIADB_DATABASE=my_database
-      - MARIADB_ENABLE_LDAP=yes
-      - LDAP_URI=ldap://openldap:1389
-      - LDAP_BASE=dc=example,dc=org
-      - LDAP_BIND_DN=cn=admin,dc=example,dc=org
-      - LDAP_BIND_PASSWORD=adminpassword
-    healthcheck:
-      test: ['CMD', '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh']
-      interval: 15s
-      timeout: 5s
-      retries: 6
-
-  dbcluster:
-    image: toughiq/mariadb-cluster
-    networks:
-      - backend
-    environment:
-      - DB_SERVICE_NAME=dbcluster
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=mydb
-      - MYSQL_USER=mydbuser
-      - MYSQL_PASSWORD=mydbpass
-    deploy:
-      mode: replicated
-      replicas: 1
-
-  dblb:
-    image: toughiq/maxscale
-    networks:
-      - backend
+      - ./conf/sql/master:/docker-entrypoint-initdb.d
+    command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
     ports:
-      - 3306:3306
+      - "4001:3306"
+
+  slave1:
+    image: mariadb:10.3
+    depends_on:
+      - master
     environment:
-      - DB_SERVICE_NAME=dbcluster
-      - ENABLE_ROOT_USER=1
-    deploy:
-      mode: replicated
-      replicas: 1
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
+    volumes:
+      - ./conf/sql/slave:/docker-entrypoint-initdb.d
+    command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
+    ports:
+      - "4002:3306"
+
+  slave2:
+    image: mariadb:10.3
+    depends_on:
+      - master
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
+    volumes:
+      - ./conf/sql/slave:/docker-entrypoint-initdb.d
+    command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
+    ports:
+      - "4003:3306"
+
+  maxscale:
+    image: mariadb/maxscale:2.4
+    depends_on:
+      - master
+      - slave1
+      - slave2
+    volumes:
+      - ./conf/sql/maxscale.cnf.d:/etc/maxscale.cnf.d
+    networks:
+      backend:
+        ipv4_address: 172.16.16.61
+    ports:
+      - "4006:4006"  # readwrite port
+      - "4008:4008"  # readonly port
+      - "8989:8989"  # REST API port
+    # environment:
+    #   - DB_SERVICE_NAME=dbcluster
+    #   - ENABLE_ROOT_USER=1
+    #   - BACKEND_SERVER_LIST="db01.myserver db02.myserver db03.myserver"
+    #   - MAX_PASS="myMaxScalePassword"
+  # // Кластер
 
   dbclient:
     image: alpine
