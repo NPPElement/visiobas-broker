@@ -134,6 +134,7 @@ services:
       - 4568:4568
     volumes:
       - ./data/mariadb_galera:/bitnami/mariadb
+    user: root
     environment:
       - MARIADB_ROOT_PASSWORD=root-password
       - MARIADB_GALERA_MARIABACKUP_PASSWORD=backup-password
@@ -152,6 +153,7 @@ services:
 
   openldap:
     image: 'docker.io/bitnami/openldap:latest'
+    user: root
     ports:
       - '1389:1389'
     environment:
