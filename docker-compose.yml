@@ -136,9 +136,10 @@ services:
       backend:
         ipv4_address: 172.16.16.61
     ports:
-      - "4006:4006"  # readwrite port
-      - "4008:4008"  # readonly port
-      - "8989:8989"  # REST API port
+      - 2812:2812
+      - 4006:4006  # readwrite port
+      - 4008:4008  # readonly port
+      - 8989:8989  # REST API port
     # environment:
     #   - DB_SERVICE_NAME=dbcluster
     #   - ENABLE_ROOT_USER=1
