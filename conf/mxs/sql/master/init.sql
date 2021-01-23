@@ -262,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `bot_chat` (
 -- Дамп структуры для процедура vbas.func_debug
 DROP PROCEDURE IF EXISTS `func_debug`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_debug`(IN `text` TEXT)
+CREATE PROCEDURE `func_debug`(IN `text` TEXT)
     COMMENT 'Вывод отладочной информации в отдельную таблицу'
 BEGIN
  	INSERT INTO `_debug` (`text`) VALUES (text);
@@ -273,7 +273,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_init
 DROP PROCEDURE IF EXISTS `func_init`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_init`()
+CREATE PROCEDURE `func_init`()
     COMMENT 'Инициализация после запуска базы'
 BEGIN
 	CALL func_init_event_all_objects();
@@ -284,7 +284,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_init_event_all_objects
 DROP PROCEDURE IF EXISTS `func_init_event_all_objects`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_init_event_all_objects`()
+CREATE PROCEDURE `func_init_event_all_objects`()
     COMMENT 'Инициализация после запуска базы'
 BEGIN
 
@@ -331,7 +331,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_init_notification_class
 DROP PROCEDURE IF EXISTS `func_init_notification_class`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_init_notification_class`(IN `object_id` INT)
+CREATE PROCEDURE `func_init_notification_class`(IN `object_id` INT)
     COMMENT 'Загрузка данных по notification class'
 BEGIN
 	DECLARE p1 VARCHAR(10);
@@ -365,7 +365,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_init_notification_groups
 DROP PROCEDURE IF EXISTS `func_init_notification_groups`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_init_notification_groups`(IN `notification_id` INT)
+CREATE PROCEDURE `func_init_notification_groups`(IN `notification_id` INT)
     COMMENT 'Заполняет список групп уже в идентификаторах, а не текстом'
 BEGIN
 	DECLARE groupName VARCHAR(250);
@@ -413,7 +413,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_link_topic_to_notify_groups_fault
 DROP PROCEDURE IF EXISTS `func_link_topic_to_notify_groups_fault`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_link_topic_to_notify_groups_fault`(IN `topicId` INT, IN `notificationId` INT)
+CREATE PROCEDURE `func_link_topic_to_notify_groups_fault`(IN `topicId` INT, IN `notificationId` INT)
     COMMENT 'Линкует найденные группы к указанному топику'
 BEGIN
 	DECLARE groupId INT;
@@ -435,7 +435,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_link_topic_to_notify_groups_normal
 DROP PROCEDURE IF EXISTS `func_link_topic_to_notify_groups_normal`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_link_topic_to_notify_groups_normal`(IN `topicId` INT, IN `notificationId` INT)
+CREATE PROCEDURE `func_link_topic_to_notify_groups_normal`(IN `topicId` INT, IN `notificationId` INT)
     COMMENT 'Линкует найденные группы к указанному топику'
 BEGIN
 	DECLARE groupId INT;
@@ -457,7 +457,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_link_topic_to_notify_groups_offnormal
 DROP PROCEDURE IF EXISTS `func_link_topic_to_notify_groups_offnormal`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_link_topic_to_notify_groups_offnormal`(IN `topicId` INT, IN `notificationId` INT)
+CREATE PROCEDURE `func_link_topic_to_notify_groups_offnormal`(IN `topicId` INT, IN `notificationId` INT)
     COMMENT 'Линкует найденные группы к указанному топику'
 BEGIN
 	DECLARE groupId INT;
@@ -479,7 +479,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.func_prepare_object_topic_info
 DROP PROCEDURE IF EXISTS `func_prepare_object_topic_info`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_prepare_object_topic_info`(IN `object_id` INT)
+CREATE PROCEDURE `func_prepare_object_topic_info`(IN `object_id` INT)
     COMMENT 'Подготовка данных об объекте для наблюдения за ним (записываются в специальную таблицу) object_looks'
 BEGIN
 	DECLARE objectTypeName 		VARCHAR(64);
@@ -739,28 +739,28 @@ DELIMITER ;
 
 
 -- Дамп структуры для функция vbas.func_replace_NameValueTime
--- DROP FUNCTION IF EXISTS `func_replace_NameValueTime`;
--- DELIMITER //
--- CREATE DEFINER=`root`@`localhost` FUNCTION `func_replace_NameValueTime`(`message` VARCHAR(250), `name` VARCHAR(150), `value` VARCHAR(100), `time` DATETIME) RETURNS text CHARSET utf8 COLLATE utf8_unicode_ci
--- BEGIN
--- 	DECLARE result TEXT;
--- 	IF message NOT LIKE '%{{.%' THEN
--- 		RETURN message;
--- 	END IF;
+DROP FUNCTION IF EXISTS `func_replace_NameValueTime`;
+DELIMITER //
+CREATE FUNCTION `func_replace_NameValueTime`(`message` VARCHAR(250), `name` VARCHAR(150), `value` VARCHAR(100), `time` DATETIME) RETURNS text CHARSET utf8 COLLATE utf8_unicode_ci DETERMINISTIC
+BEGIN
+	DECLARE result TEXT;
+	IF message NOT LIKE '%{{.%' THEN
+		RETURN message;
+	END IF;
 
--- 	SET result = REPLACE(message, '{{.Value}}', `value`);
--- 	SET result = REPLACE(result, '{{.Time}}', `time`);
--- 	SET result = REPLACE(result, '{{.Name}}', `name`);
+	SET result = REPLACE(message, '{{.Value}}', `value`);
+	SET result = REPLACE(result, '{{.Time}}', `time`);
+	SET result = REPLACE(result, '{{.Name}}', `name`);
 
--- 	RETURN result;
--- END//
--- DELIMITER ;
+	RETURN result;
+END//
+DELIMITER ;
 
 
 -- Дамп структуры для процедура vbas.func_set_rand_values
 DROP PROCEDURE IF EXISTS `func_set_rand_values`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_set_rand_values`()
+CREATE PROCEDURE `func_set_rand_values`()
 BEGIN
 	DECLARE objId INT;
 	DECLARE lowLimit 	DOUBLE;
@@ -2941,7 +2941,7 @@ CREATE TABLE IF NOT EXISTS `reliability` (
 -- Дамп структуры для событие vbas.timer_random_update_objects
 DROP EVENT IF EXISTS `timer_random_update_objects`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` EVENT `timer_random_update_objects` ON SCHEDULE EVERY 60 SECOND STARTS '2020-12-15 21:34:55' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+CREATE EVENT `timer_random_update_objects` ON SCHEDULE EVERY 60 SECOND STARTS '2020-12-15 21:34:55' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
 	DECLARE objId 		INT;
 	DECLARE lowLimit 	DOUBLE;
 	DECLARE highLimit DOUBLE;
@@ -2986,7 +2986,7 @@ DELIMITER ;
 -- Дамп структуры для событие vbas.update_2s
 DROP EVENT IF EXISTS `update_2s`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` EVENT `update_2s` ON SCHEDULE EVERY 2 SECOND STARTS '2020-11-03 13:47:53' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `update_2s` ON SCHEDULE EVERY 2 SECOND STARTS '2020-11-03 13:47:53' ON COMPLETION PRESERVE ENABLE DO BEGIN
 
 update `objects`
 	set status=status|2
@@ -3015,7 +3015,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vbas.update_watcher
 DROP PROCEDURE IF EXISTS `update_watcher`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_watcher`()
+CREATE PROCEDURE `update_watcher`()
 BEGIN
 	INSERT INTO watcer_objects (id) 
 		select id from `objects.accumulator` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.analog-input` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.analog-output` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.analog-value` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.binary-input` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.binary-output` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.binary-value` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.multi-state-input` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.multi-state-value` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects) union select id from `objects.device` where Event_Detection_Enable=1 and id NOT IN (SELECT  id from watcer_objects);
@@ -3588,7 +3588,7 @@ CREATE TABLE IF NOT EXISTS `client` (
 -- Дамп структуры для функция vdesk.func_add_topic
 DROP FUNCTION IF EXISTS `func_add_topic`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` FUNCTION `func_add_topic`(`topicName` VARCHAR(250), `description` VARCHAR(250), `user_id` INT, `priority_id` INT) RETURNS int(11)
+CREATE FUNCTION `func_add_topic`(`topicName` VARCHAR(250), `description` VARCHAR(250), `user_id` INT, `priority_id` INT) RETURNS int(11) DETERMINISTIC
     COMMENT 'Добавление записи в таблицу topic'
 BEGIN
 	DECLARE topicId INT;
@@ -3625,7 +3625,7 @@ DELIMITER ;
 -- Дамп структуры для процедура vdesk.func_add_topic_item
 DROP PROCEDURE IF EXISTS `func_add_topic_item`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `func_add_topic_item`(
+CREATE PROCEDURE `func_add_topic_item`(
 		IN `itemName` VARCHAR(250),
 		IN `itemText` VARCHAR(250),
 		IN `topic_id` INT,
@@ -3658,12 +3658,12 @@ DELIMITER ;
 -- Дамп структуры для функция vdesk.func_create_topic
 DROP FUNCTION IF EXISTS `func_create_topic`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` FUNCTION `func_create_topic`(
+CREATE FUNCTION `func_create_topic`(
 	`name` VARCHAR(50),
 	`description` VARCHAR(250),
 	`priorityId` INT,
 	`userId` INT
-	) RETURNS int(11)
+	) RETURNS int(11) DETERMINISTIC
     COMMENT 'Создание типового топика с необходимыми  topic_item'
 BEGIN
 	DECLARE topicId INT;

@@ -181,8 +181,8 @@
                         <initial-pool-size>5</initial-pool-size>
                     </pool>
                     <security>
-                        <user-name>maxuser</user-name>
-                        <password>maxpwd</password>
+                        <user-name>visiobas</user-name>
+                        <password>locpa$$</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -195,8 +195,8 @@
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <security>
-                        <user-name>maxuser</user-name>
-                        <password>maxpwd</password>
+                        <user-name>visiobas</user-name>
+                        <password>locpa$$</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -219,8 +219,8 @@
                         <max-pool-size>10</max-pool-size>
                     </xa-pool>
                     <security>
-                        <user-name>maxuser</user-name>
-                        <password>maxpwd</password>
+                        <user-name>visiobas</user-name>
+                        <password>locpa$$</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -243,8 +243,8 @@
                         <max-pool-size>10</max-pool-size>
                     </xa-pool>
                     <security>
-                        <user-name>maxuser</user-name>
-                        <password>maxpwd</password>
+                        <user-name>visiobas</user-name>
+                        <password>locpa$$</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
