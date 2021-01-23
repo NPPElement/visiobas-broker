@@ -111,8 +111,8 @@ INSERT INTO `type` (`id`, `name`, `title`) VALUES
 	(5, 'priority', 'Приоритет'),
 	(6, 'status', 'Статус'),
 	(7, 'problem', 'Проблема'),
-	(8, 'term_date_plan', 'Плановая дата завершения'),
-	(9, 'term_date_fact', 'Фактическая дата завершения'),
+	(8, 'term_date_plan', 'Плановая дата'),
+	(9, 'term_date_fact', 'Фактическая дата'),
 	(10, 'audio', 'Аудиофайл'),
 	(11, 'location', 'Место'),
 	(12, 'venue', 'Встреча'),
@@ -122,6 +122,7 @@ INSERT INTO `type` (`id`, `name`, `title`) VALUES
 	(16, 'removed_from_user', 'Удален у пользователя'),
 	(17, 'description', 'Изменено описание'),
 	(18, 'checklist', 'Из чек-листа');
+
 
 INSERT INTO `user` (`id`, `first_name`, `last_name`, `login`, `pass_hash`, `token`, `client_id`, `position`, `dismissed`, `phone`, `user_name`, `sms_code`, `middle_name`, `user_type_id`, `tmp_hash`, `link_used`, `avatar`) VALUES
 	(1, 'admin', 'admin', 'admin', 'e43789d888e4ff27e407b7a532010e1a', NULL, 1, 'admin', NULL, NULL, 'admin', NULL, 'admin', NULL, NULL, NULL, NULL),
