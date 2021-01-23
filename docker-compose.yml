@@ -96,7 +96,10 @@ services:
     image: mariadb:10.5
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
+      - ./conf/mxs/sql/init-files:/opt
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
       - ./data/mysql:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
@@ -186,7 +189,7 @@ services:
               sleep $$BACKUP_INTERVAL
               mkdir -p $$BACKUP_PATH/$$(date +%F)
               echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
-              mysqldump -u maxuser -pmaxpwd -h maxscale -P 4006 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
+              mysqldump -uvisiobas -plocpa$$ -h maxscale -P 4006 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
               find $$BACKUP_PATH -mtime 7 -delete
           fi
         done

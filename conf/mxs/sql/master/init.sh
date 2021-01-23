@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # Разворачиваем базу данных
+mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD < /opt/user.sql
+
+# Разворачиваем базу данных
 mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD < /opt/init.sql
 
 # Заполняем начальные данные
