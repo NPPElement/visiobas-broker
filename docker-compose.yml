@@ -64,31 +64,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data/portainer:/data
 
-  # node1:
-  #   image: mariadb:10.5
-  #   hostname: node1
-  #   container_name: node1
-  #   user: root
-  #   # ports:
-  #   #   - 3306:3306
-  #   # networks:
-  #   #   backend:
-  #   #     ipv4_address: 172.16.16.51
-  #   environment:
-  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #     - VISIODESK_ADMIN_PASSWORD=${VISIODESK_ADMIN_PASSWORD}
-  #   volumes:
-  #     - ./conf/mysql/node1.cnf:/etc/mysql/conf.d/galera.cnf
-  #     - ./conf/mysql/sql-files:/opt
-  #     - ./data/mysql:/var/lib/mysql
-  #     - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
-  #   command: 
-  #     - --wsrep-new-cluster
-
 # Кластер maxscale
   master:
     hostname: master
@@ -139,7 +114,8 @@ services:
       - "4003:3306"
 
   maxscale:
-    container_name: maxscale
+    hostname: mxs
+    container_name: mxs
     image: mariadb/maxscale:2.4
     depends_on:
       - master
@@ -149,7 +125,7 @@ services:
       - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
     networks:
       backend:
-        ipv4_address: 172.16.16.51
+        ipv4_address: 172.16.16.60
     ports:
       - 4006:4006  # readwrite port
       - 4008:4008  # readonly port
@@ -167,15 +143,14 @@ services:
     image: alpine
     depends_on:
       - maxscale
-    links:
-      - maxscale
     environment:
       - BACKUP_ENABLED=1
       - BACKUP_INTERVAL=60
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.42
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -199,8 +174,9 @@ services:
     container_name: phpmyadmin
     environment:
     - PMA_ARBITRARY=1
-    links:
-      - maxscale
+    networks:
+      backend:
+        ipv4_address: 172.16.16.41
     restart: always
     volumes:
      - /sessions
@@ -211,8 +187,6 @@ services:
     container_name: webdav
     restart: always
     user: root
-    depends_on:
-      - maxscale
     environment:
       - WILDFLY_PUBLIC_CONSOLE=1
       - WILDFLY_USERNAME=admin
@@ -221,9 +195,8 @@ services:
       - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
       - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
     networks:
-      - backend
-    ports:
-      - 9991:9990
+      backend:
+        ipv4_address: 172.16.16.40
     command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
     volumes: 
       - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
@@ -265,3 +238,27 @@ services:
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
       - ./conf/visiodesk/configuration/application.keystore:/opt/jboss/wildfly/standalone/configuration/application.keystore
 
+# node1:
+  #   image: mariadb:10.5
+  #   hostname: node1
+  #   container_name: node1
+  #   user: root
+  #   # ports:
+  #   #   - 3306:3306
+  #   # networks:
+  #   #   backend:
+  #   #     ipv4_address: 172.16.16.51
+  #   environment:
+  #     - REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+  #     - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #     - VISIODESK_ADMIN_PASSWORD=${VISIODESK_ADMIN_PASSWORD}
+  #   volumes:
+  #     - ./conf/mysql/node1.cnf:/etc/mysql/conf.d/galera.cnf
+  #     - ./conf/mysql/sql-files:/opt
+  #     - ./data/mysql:/var/lib/mysql
+  #     - ./conf/mysql/init-files:/docker-entrypoint-initdb.d
+  #   command: 
+  #     - --wsrep-new-cluster
