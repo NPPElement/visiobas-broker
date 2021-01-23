@@ -89,7 +89,7 @@ services:
     command: 
       - --wsrep-new-cluster
 
-# Кластер mxs
+# Кластер maxscale
   master:
     hostname: master
     container_name: master
@@ -156,11 +156,11 @@ services:
       - 4006:4006  # readwrite port
       - 4008:4008  # readonly port
       - 8989:8989  # REST API port
-    environment:
-      - DB_SERVICE_NAME=maxscale
-      - ENABLE_ROOT_USER=1
-      - BACKEND_SERVER_LIST="server1 server2 server3"
-      - MAX_PASS="admin"
+    # environment:
+    #   - DB_SERVICE_NAME=maxscale
+    #   - ENABLE_ROOT_USER=1
+    #   - BACKEND_SERVER_LIST="server1 server2 server3"
+    #   - MAX_PASS="admin"
 # // Кластер
 
   dbclient:
