@@ -11,5 +11,5 @@ GRANT ALL ON *.* TO 'maxuser'@'%' WITH GRANT OPTION;
 
 -- создаем пользователя для доступа к базе данных с visiodesk 
 -- и разрешаем доступ с любого хоста в сети 172.16.16.0/24
-CREATE USER 'visiodesk'@'172.16.16.%' IDENTIFIED BY 'mkfkSbfTl';
+CREATE USER 'visiobas'@'172.16.16.%' IDENTIFIED BY 'mkfkSbfTl';
 GRANT ALL PRIVILEGES ON *.* TO visiodesk@'172.16.16.%';
