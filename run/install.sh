@@ -73,6 +73,7 @@ docker load -i /opt/services/conf/containers/visiodesk-server.tar
 sudo docker-compose up -d --force-recreate
 
 # Сохраним все контейнеры в локальное хранилище
+mkdir /opt/services/conf/containers
 cd /opt/services/conf/containers/
 docker save -o containers-one.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
 
