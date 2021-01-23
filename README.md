@@ -83,9 +83,16 @@ http://visiodesk.net/manager/phpmyadmin/
 ## MaxScale
 MaxScale - это прокси-сервер базы данных с прозрачной балансировкой нагрузки, который расширяет возможности высокой доступности, масштабируемости и безопасности сервера MariaDB, одновременно упрощая разработку приложений, отделяя его от базовой инфраструктуры базы данных.
 
-Запустите maxctrl в контейнере, чтобы увидеть статус кластера:
+Чтобы проверить, все ли в порядке, просто выполните следующие команды:
 ```
 docker-compose exec maxscale maxctrl list servers
+docker-compose exec maxscale maxctrl list services
+docker-compose exec maxscale maxctrl list filters
+docker-compose exec maxscale maxctrl list sessions
+```
+Чтобы получить дополнительную информацию о каждом компоненте, используйте префикс команды "show", например:
+```
+docker-compose exec maxscale maxctrl list show sessions
 ```
 
 ## License
