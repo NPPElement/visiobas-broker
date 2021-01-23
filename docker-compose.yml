@@ -146,8 +146,9 @@ services:
       - BACKUP_INTERVAL=60
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
-    links:
-      - maxscale
+    networks:
+      backend:
+        ipv4_address: 172.16.16.42
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -171,9 +172,10 @@ services:
     container_name: phpmyadmin
     environment:
     - PMA_ARBITRARY=1
-    links:
-      - maxscale
     restart: always
+    networks:
+      backend:
+        ipv4_address: 172.16.16.41
     volumes:
      - /sessions
 
