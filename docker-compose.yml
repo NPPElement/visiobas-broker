@@ -71,7 +71,7 @@ services:
     image: mariadb:10.5
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
-      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - ./conf/mxs/sql/init-files:/opt
