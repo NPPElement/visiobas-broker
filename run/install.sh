@@ -4,6 +4,21 @@
 # Для обновления уже установленного сервера воспользуйтесь update.sh
 # Для запуска сервера воспользуйтесь start.sh
 
+spinner()
+{
+    local pid=$1
+    local delay=1
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
 # Обновление и подготовка сервера  
 sudo apt --assume-yes update
 sudo apt --assume-yes upgrade
@@ -64,7 +79,11 @@ docker save -o containers-one.tar jwilder/nginx-proxy:latest rabbitmq:3-manageme
 # Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
 sudo docker restart visiodesk
-sleep 10
+
+echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
+echo ' '
+
+docker-compose exec maxscale maxctrl list servers
 
 # Visiodesk установлен
 echo ' '
