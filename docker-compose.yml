@@ -78,8 +78,8 @@ services:
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
       - ./data/db-master:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
-    networks:
-      - backend
+    backend:
+        ipv4_address: 172.16.16.69
     ports:
       - "4001:3306"
 
@@ -95,8 +95,8 @@ services:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
       - ./data/db-slave1:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
-    networks:
-      - backend
+    backend:
+        ipv4_address: 172.16.16.61
     ports:
       - "4002:3306"
 
@@ -112,8 +112,8 @@ services:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
       - ./data/db-slave2:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
-    networks:
-      - backend
+    backend:
+        ipv4_address: 172.16.16.62
     ports:
       - "4003:3306"
 
