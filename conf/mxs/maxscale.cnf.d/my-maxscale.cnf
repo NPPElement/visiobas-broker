@@ -1,76 +1,105 @@
+########################
+# Server list
+########################
+
 [server1]
-type=server
-address=master
-port=3306
-protocol=MariaDBBackend
+type                            = server
+address                         = master
+port                            = 3306
+protocol                        = MariaDBBackend
 
 [server2]
-type=server
-address=slave1
-port=3306
-protocol=MariaDBBackend
+type                            = server
+address                         = slave1
+port                            = 3306
+protocol                        = MariaDBBackend
 
 [server3]
-type=server
-address=slave2
-port=3306
-protocol=MariaDBBackend
+type                            = server
+address                         = slave2
+port                            = 3306
+protocol                        = MariaDBBackend
 
+#########################
+# MaxScale configuration
+#########################
+ 
+[maxscale]
+threads                         = auto
+log_augmentation                = 1
+ms_timestamp                    = 1
+syslog                          = 1
+
+#########################
 # Monitor for the servers
 # This will keep MaxScale aware of the state of the servers.
 # MySQL Monitor documentation:
 # https://github.com/mariadb-corporation/MaxScale/blob/2.3/Documentation/Monitors/MariaDB-Monitor.md
-
+#########################
+ 
 [MariaDB-Monitor]
-type=monitor
-module=mariadbmon
-servers=server1,server2,server3
-user=maxuser
-password=maxpwd
-failcount=3
-backend_connect_timeout=3
-backend_write_timeout=3
-backend_read_timeout=3
-auto_failover=true
-auto_rejoin=true
-enforce_read_only_slaves=1
+type                            = monitor
+module                          = mariadbmon
+servers                         = server1,server2,server3
+user                            = maxuser
+password                        = maxpwd
+failcount                       = 3
+backend_connect_timeout         = 3
+backend_write_timeout           = 3
+backend_read_timeout            = 3
+auto_failover                   = true
+auto_rejoin                     = true
+enforce_read_only_slaves        = 1
 
-# Service definitions
+#########################
 # Service Definition for a read-only service and a read/write splitting service.
-
 # ReadConnRoute documentation:
 # https://github.com/mariadb-corporation/MaxScale/blob/2.3/Documentation/Routers/ReadConnRoute.md
+#########################
 
 [Read-Only-Service]
-type=service
-router=readconnroute
-servers=server1,server2,server3
-user=maxuser
-password=maxpwd
-router_options=slave
+type                            = service
+router                          = readconnroute
+servers                         = server1,server2,server3
+user                            = maxuser
+password                        = maxpwd
+router_options                  = slave
 
+#########################
 # ReadWriteSplit documentation:
 # https://github.com/mariadb-corporation/MaxScale/blob/2.3/Documentation/Routers/ReadWriteSplit.md
+#########################
 
 [Read-Write-Service]
-type=service
-router=readwritesplit
-servers=server1,server2,server3
-user=maxuser
-password=maxpwd
-master_failure_mode=fail_on_write
+type                            = service
+router                          = readwritesplit
+servers                         = server1,server2,server3
+user                            = maxuser
+password                        = maxpwd
+max_slave_connections           = 100%
+max_sescmd_history              = 1500
+causal_reads                    = true
+causal_reads_timeout            = 10
+transaction_replay              = true
+transaction_replay_max_size     = 1Mi
+delayed_retry                   = true
+master_reconnection             = true
+master_failure_mode             = fail_on_write
+max_slave_replication_lag       = 3
 
-# Listener definitions for the services
-# Listeners represent the ports the services will listen on.
+##########################
+## Listener definitions for the service
+## Listeners represent the ports the service will listen on.
+##########################
 
 [Read-Only-Listener]
-type=listener
-service=Read-Only-Service
-protocol=MySQLClient
-port=4008
+type                            = listener
+service                         = Read-Only-Service
+protocol                        = MySQLClient
+port                            = 4008
 
 [Read-Write-Listener]
-type=listener
-service=Read-Write-Service
-protocol=MySQLClient
-port=4006
+type                            = listener
+service                         = Read-Write-Service
+protocol                        = MySQLClient
+port                            = 4006
