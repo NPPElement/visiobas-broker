@@ -149,7 +149,7 @@ services:
     networks:
       - backend
     ports:
-      - 4006:4006  # readwrite port
+      - 3306:4006  # readwrite port
       - 4008:4008  # readonly port
       - 8989:8989  # REST API port
     # environment:

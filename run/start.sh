@@ -30,6 +30,7 @@ sudo docker-compose up -d --force-recreate
 
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
 
+docker-compose exec maxscale maxctrl list servers
 
 # Visiodesk запущен
 echo ' '
