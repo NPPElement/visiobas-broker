@@ -139,8 +139,8 @@ services:
       - "4003:3306"
 
   maxscale:
-    hostname: mxs
-    container_name: mxs
+    hostname: maxscale
+    container_name: maxscale
     image: mariadb/maxscale:2.4
     depends_on:
       - master
@@ -200,9 +200,9 @@ services:
     container_name: phpmyadmin
     environment:
     - PMA_ARBITRARY=1
+    links:
+      - maxscale
     restart: always
-    networks:
-      - backend
     volumes:
      - /sessions
 
