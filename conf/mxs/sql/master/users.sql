@@ -17,8 +17,8 @@ SET GLOBAL gtid_strict_mode=ON;
 -- создаем пользователя для доступа к базе данных с visiodesk 
 -- и разрешаем доступ с любого хоста в сети 172.16.16.0/24
 
-CREATE USER 'visiobas'@'172.16.16.50' IDENTIFIED BY 'locpa$$';
-GRANT ALL ON *.* TO 'visiobas'@'172.16.16.50' WITH GRANT OPTION;
+CREATE USER 'visiobas'@'172.16.16.60' IDENTIFIED BY 'locpa$$';
+GRANT ALL ON *.* TO 'visiobas'@'172.16.16.60' WITH GRANT OPTION;
 
 CREATE USER 'backup'@'172.16.16.42' IDENTIFIED BY 'backupa$$';
 GRANT SELECT ON *.* TO 'backup'@'172.16.16.42' WITH GRANT OPTION;
