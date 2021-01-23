@@ -22,5 +22,5 @@ CREATE USER 'visiobas'@'%' IDENTIFIED BY 'locpa$$';
 GRANT ALL ON *.* TO 'visiobas'@'127.0.0.1' WITH GRANT OPTION;
 GRANT ALL ON *.* TO 'visiobas'@'%' WITH GRANT OPTION;
 
-CREATE USER 'root'@'localhost' IDENTIFIED BY 'locpa$$';
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'admin';
 GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
