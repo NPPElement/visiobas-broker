@@ -159,7 +159,7 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:/ScadaDS" pool-name="ScadaDS" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/vbas?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.51:4006/vbas?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <security>
@@ -173,7 +173,7 @@
                     </validation>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/VdeskDS" pool-name="vdesk">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/vdesk?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.51:4006/vdesk?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <pool>
@@ -191,7 +191,7 @@
                     </validation>
                 </datasource>
                 <datasource jta="true" jndi-name="java:/jboss/datasources/authDS" pool-name="authDS" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/auth</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.51:4006/auth</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <security>
