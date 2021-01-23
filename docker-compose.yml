@@ -100,7 +100,8 @@ services:
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.60
     ports:
       - "4001:3306"
 
@@ -116,7 +117,8 @@ services:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.61
     ports:
       - "4002:3306"
 
@@ -132,7 +134,8 @@ services:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.62
     ports:
       - "4003:3306"
 
@@ -147,7 +150,8 @@ services:
     volumes:
       - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.65
     ports:
       - 4006:4006  # readwrite port
       - 4008:4008  # readonly port
@@ -169,7 +173,8 @@ services:
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.16.16.66
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -180,7 +185,7 @@ services:
               sleep $$BACKUP_INTERVAL
               mkdir -p $$BACKUP_PATH/$$(date +%F)
               echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
-              mysqldump -u maxuser -pmaxpwd -h dblb --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
+              mysqldump -u maxuser -pmaxpwd -h 127.0.0.1 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
               find $$BACKUP_PATH -mtime 7 -delete
           fi
         done
