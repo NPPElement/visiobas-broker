@@ -1,3 +1,6 @@
+[maxscale]
+threads=auto
+
 [server1]
 type=server
 address=master
