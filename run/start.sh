@@ -4,7 +4,7 @@ export COMPOSE_HTTP_TIMEOUT=200
 spinner()
 {
     local pid=$1
-    local delay=0.25
+    local delay=1
     local spinstr='|/-\'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
