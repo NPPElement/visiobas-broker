@@ -95,13 +95,11 @@ services:
     container_name: master
     image: mariadb:10.5
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD='Y'
-      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
     volumes:
-      - ./conf/mxs/sql/init-files:/opt
+      #- ./conf/mxs/sql/init-files:/opt
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
-      - ./data/mysql:/var/lib/mysql
+      #- ./data/mysql:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
     networks:
       - backend
