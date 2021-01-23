@@ -140,8 +140,8 @@ services:
       - "4003:3306"
 
   maxscale:
-    hostname: mxs
-    container_name: mxs
+    hostname: maxscale
+    container_name: maxscale
     image: mariadb/maxscale:2.4
     depends_on:
       - master
@@ -157,7 +157,7 @@ services:
       - 4008:4008  # readonly port
       - 8989:8989  # REST API port
     environment:
-      - DB_SERVICE_NAME=dbcluster
+      - DB_SERVICE_NAME=maxscale
       - ENABLE_ROOT_USER=1
       #- BACKEND_SERVER_LIST="db01.myserver db02.myserver db03.myserver"
       - MAX_PASS="myMaxScalePassword"
