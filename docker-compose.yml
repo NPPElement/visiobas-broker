@@ -76,7 +76,7 @@ services:
     volumes:
       - ./conf/mxs/sql/init-files:/opt
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
-      #- ./data/mysql:/var/lib/mysql
+      - ./data/db-master:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
     networks:
       - backend
@@ -93,6 +93,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
     volumes:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
+      - ./data/db-slave1:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
     networks:
       - backend
@@ -109,6 +110,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
     volumes:
       - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
+      - ./data/db-slave2:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
     networks:
       - backend
@@ -132,12 +134,6 @@ services:
       - 4006:4006  # readwrite port
       - 4008:4008  # readonly port
       - 8989:8989  # REST API port
-    # environment:
-    #   - DB_SERVICE_NAME=maxscale
-    #   - ENABLE_ROOT_USER=1
-    #   - BACKEND_SERVER_LIST="server1 server2 server3"
-    #   - MAX_PASS="admin"
-# // Кластер
 
   dbclient:
     hostname: dbclient
@@ -150,9 +146,8 @@ services:
       - BACKUP_INTERVAL=60
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
-    networks:
-      backend:
-        ipv4_address: 172.16.16.42
+    links:
+      - maxscale
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -169,16 +164,15 @@ services:
         done
       EOF'
     volumes:
-      - ./data/dbclient:/data
+      - ./data/db-backup:/data
 
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin
     environment:
     - PMA_ARBITRARY=1
-    networks:
-      backend:
-        ipv4_address: 172.16.16.41
+    links:
+      - maxscale
     restart: always
     volumes:
      - /sessions
@@ -190,10 +184,6 @@ services:
     restart: always
     user: root
     environment:
-      - WILDFLY_PUBLIC_CONSOLE=1
-      - WILDFLY_USERNAME=admin
-      - WILDFLY_PASSWORD=admin
-      - WILDFLY_NAME=wildfly
       - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
       - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
     networks:
