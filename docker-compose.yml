@@ -182,7 +182,7 @@ services:
               sleep $$BACKUP_INTERVAL
               mkdir -p $$BACKUP_PATH/$$(date +%F)
               echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
-              mysqldump -u maxuser -pmaxpwd -h dblb --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
+              mysqldump -u maxuser -pmaxpwd -h 127.0.0.1 -P 4006 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
               find $$BACKUP_PATH -mtime 7 -delete
           fi
         done
