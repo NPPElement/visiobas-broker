@@ -739,22 +739,22 @@ DELIMITER ;
 
 
 -- Дамп структуры для функция vbas.func_replace_NameValueTime
-DROP FUNCTION IF EXISTS `func_replace_NameValueTime`;
-DELIMITER //
-CREATE DEFINER=`root`@`localhost` FUNCTION `func_replace_NameValueTime`(`message` VARCHAR(250), `name` VARCHAR(150), `value` VARCHAR(100), `time` DATETIME) RETURNS text CHARSET utf8 COLLATE utf8_unicode_ci
-BEGIN
-	DECLARE result TEXT;
-	IF message NOT LIKE '%{{.%' THEN
-		RETURN message;
-	END IF;
+-- DROP FUNCTION IF EXISTS `func_replace_NameValueTime`;
+-- DELIMITER //
+-- CREATE DEFINER=`root`@`localhost` FUNCTION `func_replace_NameValueTime`(`message` VARCHAR(250), `name` VARCHAR(150), `value` VARCHAR(100), `time` DATETIME) RETURNS text CHARSET utf8 COLLATE utf8_unicode_ci
+-- BEGIN
+-- 	DECLARE result TEXT;
+-- 	IF message NOT LIKE '%{{.%' THEN
+-- 		RETURN message;
+-- 	END IF;
 
-	SET result = REPLACE(message, '{{.Value}}', `value`);
-	SET result = REPLACE(result, '{{.Time}}', `time`);
-	SET result = REPLACE(result, '{{.Name}}', `name`);
+-- 	SET result = REPLACE(message, '{{.Value}}', `value`);
+-- 	SET result = REPLACE(result, '{{.Time}}', `time`);
+-- 	SET result = REPLACE(result, '{{.Name}}', `name`);
 
-	RETURN result;
-END//
-DELIMITER ;
+-- 	RETURN result;
+-- END//
+-- DELIMITER ;
 
 
 -- Дамп структуры для процедура vbas.func_set_rand_values
