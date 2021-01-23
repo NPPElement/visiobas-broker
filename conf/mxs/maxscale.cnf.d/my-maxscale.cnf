@@ -50,6 +50,7 @@ backend_read_timeout            = 3
 auto_failover                   = true
 auto_rejoin                     = true
 enforce_read_only_slaves        = 1
+monitor_interval                = 2000ms
 
 #########################
 # Service Definition for a read-only service and a read/write splitting service.
