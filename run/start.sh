@@ -29,6 +29,7 @@ cd /opt/services
 sudo docker-compose up -d --force-recreate
 
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
+echo ' '
 
 docker-compose exec maxscale maxctrl list servers
 
