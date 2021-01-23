@@ -68,8 +68,8 @@ monitor_interval                = 2000ms
 type                            = service
 router                          = readconnroute
 servers                         = server1,server2,server3
-user                            = read
-password                        = readpa$$
+user                            = monitor
+password                        = monitorpa$$
 router_options                  = slave
 
 #########################
@@ -81,8 +81,8 @@ router_options                  = slave
 type                            = service
 router                          = readwritesplit
 servers                         = server1,server2,server3
-user                            = write
-password                        = writepa$$
+user                            = monitor
+password                        = monitorpa$$
 max_slave_connections           = 100%
 max_sescmd_history              = 1500
 causal_reads                    = true
