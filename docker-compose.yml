@@ -116,8 +116,8 @@ services:
       - "4003:3306"
 
   maxscale:
-    hostname: mxs
-    container_name: mxs
+    build: .
+    container_name: maxscale
     image: mariadb/maxscale:2.4
     depends_on:
       - master

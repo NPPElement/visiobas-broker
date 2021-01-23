@@ -1,6 +1,6 @@
 RESET MASTER;
 
-SET GLOBAL max_connections=1000;
+SET GLOBAL max_connections=10000;
 SET GLOBAL gtid_strict_mode=ON;
 
 -- MaxScale проверяет действительность входящих клиентов. 
@@ -17,5 +17,8 @@ SET GLOBAL gtid_strict_mode=ON;
 -- создаем пользователя для доступа к базе данных с visiodesk 
 -- и разрешаем доступ с любого хоста в сети 172.16.16.0/24
 
+CREATE USER 'visiobas'@'127.0.0.1' IDENTIFIED BY 'locpa$$';
 CREATE USER 'visiobas'@'%' IDENTIFIED BY 'locpa$$';
-GRANT ALL ON *.* TO 'visiobas'@'%';
+GRANT ALL ON *.* TO 'visiobas'@'127.0.0.1' WITH GRANT OPTION;
+GRANT ALL ON *.* TO 'visiobas'@'%' WITH GRANT OPTION;
+

@@ -85,6 +85,12 @@ echo ' '
 
 docker-compose exec maxscale maxctrl list servers
 
+echo ' '
+echo '   Устанавливаем начальные данные'
+echo ' '
+
+docker-compose exec master sh -c 'sh /opt/init.sh'
+
 # Visiodesk установлен
 echo ' '
 echo '************************************'
