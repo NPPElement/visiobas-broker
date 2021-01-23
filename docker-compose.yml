@@ -160,6 +160,8 @@ services:
 # // Кластер
 
   dbclient:
+    hostname: dbclient
+    container_name: dbclient
     image: alpine
     environment:
       - BACKUP_ENABLED=1
