@@ -7,18 +7,24 @@ type                            = server
 address                         = master
 port                            = 3306
 protocol                        = MariaDBBackend
+#ssl                             = true
+#ssl_verify_peer_certificate     = true
 
 [server2]
 type                            = server
 address                         = slave1
 port                            = 3306
 protocol                        = MariaDBBackend
+#ssl                             = true
+#ssl_verify_peer_certificate     = true
 
 [server3]
 type                            = server
 address                         = slave2
 port                            = 3306
 protocol                        = MariaDBBackend
+#ssl                             = true
+#ssl_verify_peer_certificate     = true
 
 #########################
 # MaxScale configuration

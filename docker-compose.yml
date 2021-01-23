@@ -74,7 +74,7 @@ services:
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      #- ./conf/mxs/sql/init-files:/opt
+      - ./conf/mxs/sql/init-files:/opt
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
       #- ./data/mysql:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
