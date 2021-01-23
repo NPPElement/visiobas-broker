@@ -24,11 +24,11 @@ protocol                        = MariaDBBackend
 # MaxScale configuration
 #########################
  
-[maxscale]
-threads                         = auto
-log_augmentation                = 1
-ms_timestamp                    = 1
-syslog                          = 1
+#[maxscale]
+#threads                         = auto
+#log_augmentation                = 1
+#ms_timestamp                    = 1
+#syslog                          = 1
 
 #########################
 # Monitor for the servers
