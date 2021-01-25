@@ -213,10 +213,9 @@ services:
       - maxscale
     environment:
       - WILDFLY_PUBLIC_CONSOLE=1
-      - WILDFLY_USERNAME=admin
-      - WILDFLY_PASSWORD=admin
-      - WILDFLY_NAME=wildfly
-      - WILDFLY_HOST=visiodesk.net
+      - WILDFLY_USERNAME=${WILDFLY_USERNAME}
+      - WILDFLY_PASSWORD=${WILDFLY_PASSWORD}
+      - WILDFLY_NAME=${WILDFLY_NAME}
      # - CLUSTER_PW=admin
     ports:
       - 9990:9990
@@ -235,4 +234,4 @@ services:
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      - ./conf/visiodesk/configuration/application.keystore:/opt/jboss/wildfly/standalone/configuration/application.keystore
+      #- ./conf/visiodesk/configuration/application.keystore:/opt/jboss/wildfly/standalone/configuration/application.keystore
