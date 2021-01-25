@@ -69,13 +69,12 @@ sudo rm -R template-env
 
 # Запускаем контейнеры
 cd /opt/services
-docker load -i /opt/services/conf/containers/visiodesk-server.tar
+#docker load -i /opt/services/conf/containers/visiodesk-server.tar
 sudo docker-compose up -d --force-recreate
 
 # Сохраним все контейнеры в локальное хранилище
-mkdir /opt/services/conf/containers
-cd /opt/services/conf/containers/
-docker save -o containers-one.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
+#mkdir /opt/services/data/containers
+#docker save -o /opt/services/data/containers/containers-one.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly alpine mariadb/maxscale:2.4
 
 # Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
