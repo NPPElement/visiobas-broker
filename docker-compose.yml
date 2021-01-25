@@ -124,7 +124,6 @@ services:
       - "4003:3306"
 
   maxscale:
-    build: .
     container_name: maxscale
     image: mariadb/maxscale:2.4
     depends_on:
