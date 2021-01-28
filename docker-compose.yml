@@ -198,9 +198,9 @@ services:
         ipv4_address: 172.16.16.40
     command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
     volumes: 
+      - ./home/visiodesk/svg:/opt/webdav/webdav-files
       - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
-      - ./conf/visiodesk/welcome-content/svg:/opt/webdav/webdav-files
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   cloud9:
@@ -213,7 +213,7 @@ services:
       - USERNAME=admin #optional
       - PASSWORD=admin #optional
     volumes:
-      - /home/visiodesk/svg:/workspace
+      - ./home/visiodesk/svg:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
@@ -251,4 +251,4 @@ services:
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      #- ./home/configuration:/opt/jboss/wildfly/standalone/configuration
+      - ./home/configuration:/opt/jboss/wildfly/standalone/configuration

@@ -3,5 +3,6 @@ data
 log
 home/visiodesk
 home/db-backup/*
+home/configuration/application.keystore
 .env
 *.war.deployed
