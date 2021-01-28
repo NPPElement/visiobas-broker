@@ -39,8 +39,8 @@ docker-compose --version
 
 mkdir /opt/services/conf/containers/
 # Сохраним все контейнеры в локальное хранилище
-cd /opt/services/conf/containers/
-docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
+# cd /opt/services/conf/containers/
+# docker save -o containers.tar jwilder/nginx-proxy:latest rabbitmq:3-management portainer/portainer-ce mariadb:10.5 phpmyadmin jboss/wildfly
 
 # Установка контейнеров
 cd /opt/services/conf/containers/
