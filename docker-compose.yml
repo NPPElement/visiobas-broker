@@ -19,9 +19,9 @@ services:
     volumes:
       - ./conf/nginx/www:/usr/share/nginx/html
       - ./conf/nginx/conf:/etc/nginx/conf.d
-      - ./conf/nginx/dhparam:/etc/nginx/dhparam
-      - ./conf/nginx/vhost:/etc/nginx/vhost.d
-      - ./conf/nginx/certs:/etc/nginx/certs
+      - ./data/nginx/dhparam:/etc/nginx/dhparam
+      - ./data/nginx/vhost:/etc/nginx/vhost.d
+      - ./data/nginx/certs:/etc/nginx/certs
       - /run/docker.sock:/tmp/docker.sock:ro
     restart: "always"
     ports:
@@ -204,9 +204,9 @@ services:
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   cloud9:
-  container_name: cloud9
   image: egoexpress/cloud9
-  restart: on-failure:10
+  #container_name: cloud9
+  restart: always
   volumes_from:
     - webdav
   environment:
