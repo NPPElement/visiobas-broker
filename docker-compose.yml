@@ -250,4 +250,4 @@ services:
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      - ./home/keystore/:/opt/jboss/wildfly/standalone/configuration/application.keystore
+      - ./home/configuration/:/opt/jboss/wildfly/standalone/configuration/
