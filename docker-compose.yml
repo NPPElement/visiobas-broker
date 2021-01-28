@@ -204,7 +204,7 @@ services:
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   cloud9:
-    image: ghcr.io/linuxserver/cloud9
+    image: kdelfour/cloud9-docker
     container_name: cloud9
     environment:
       - PUID=1000
@@ -213,10 +213,10 @@ services:
       - USERNAME=admin #optional
       - PASSWORD=admin #optional
     volumes:
-      - /opt/welcome-content/svg:/code
+      - /opt/welcome-content/svg:/workspace
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 8000:8000
+      - 9999:80
     restart: unless-stopped
 
   visiodesk:
