@@ -47,14 +47,14 @@ cd /opt/services/conf/containers/
 # sudo wget -L http://cloud.visiodesk.ru/containers/visiodesk-server.tar
 
 # Установка клиента visiodesk в директорию /opt/services/conf/visiodesk/
-cd /opt
-git clone https://github.com/NPPElement/visiodesk-client.git welcome-content
+cd /opt/services/home/
+git clone https://github.com/NPPElement/visiodesk-client.git visiodesk
 
 # Создаем папки для файлов
-mkdir /opt/welcome-content/stub
-mkdir /opt/welcome-content/files
-mkdir /opt/welcome-content/svg
-mkdir /opt/welcome-content/svg/tiles
+mkdir /opt/services/home/visiodesk/stub
+mkdir /opt/services/home/visiodesk/files
+mkdir /opt/services/home/visiodesk/svg
+mkdir /opt/services/home/visiodesk/svg/tiles
 
 # Установка шлюза visiobas в директорию /opt/services/conf/gateway/
 cd /opt
