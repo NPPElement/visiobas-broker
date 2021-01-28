@@ -213,7 +213,8 @@ services:
       - USERNAME=admin #optional
       - PASSWORD=admin #optional
     volumes:
-      - /opt/welcome-content/svg:/workspace
+      - /home/visiodesk/svg:/workspace
+      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 9999:80
