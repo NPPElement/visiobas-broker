@@ -1,36 +1,44 @@
 #!/bin/bash
-echo ' '
-echo '********************'
-echo '  Update visiodesk  '
-echo '********************'
-echo ' '
+# Скрипт полностью пересобирает контейнеры и обновляет все (данные не пропадут)
+spinner()
+{
+    local pid=$1
+    local delay=1
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
 
-export COMPOSE_HTTP_TIMEOUT=200
-
-# Останавливаем сервер
+# Остановим и обновим контейнеры
+cd /opt/services
 sudo docker-compose down
-
-# Обновляем сервер 
-cd /opt/services/
 sudo git pull
-
-# Удалим все образы
-sudo docker images -a | xargs -n 1 -I {} sudo docker rmi -f {}
 
 # Обновим клиента
-cd /opt/services/conf/visiodesk/welcome-content
+cd /opt/services/home/visiodesk
 sudo git pull
 
-# Загрузим образы из архива в среду Docker
-cd /opt/services/conf/containers
-docker load -i containers.tar
-
+# Соберем и запустим контейнеры 
 cd /opt/services
-sudo docker-compose build --no-cache
 sudo docker-compose up -d --force-recreate
 
+echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
 echo ' '
-echo '********************'
-echo '   Completed!!!'
-echo '********************'
+
+docker-compose exec maxscale maxctrl list servers
+
+# Visiodesk запущен
+echo ' '
+echo '************************************'
+echo '   Visiodesk обновлен и запущен!!!  '
+echo '                                    '
+echo 'Откройте web интерфейс по адресу:   '
+echo 'http://yousite/ или https://yousite/'
+echo '************************************'
 echo ' '

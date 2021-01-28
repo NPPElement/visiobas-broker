@@ -16,19 +16,18 @@ spinner()
     printf "    \b\b\b\b"
 }
 
-# Это только для отладки
+# Остановим и обновим контейнеры
 cd /opt/services
-sudo docker-compose down
+#sudo docker-compose down
 sudo git pull
 
-cd /opt/welcome-content/
+# Обновим клиента
+cd /opt/services/home/visiodesk
 sudo git pull
 
-cd /opt/services
-#sudo docker-compose build --no-cache
-sudo docker-compose up -d --force-recreate
+sudo docker restart visiodesk
 
-echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
+echo -n 'visiodesk перезапускается '; (sleep 40) & spinner $!
 echo ' '
 
 docker-compose exec maxscale maxctrl list servers
