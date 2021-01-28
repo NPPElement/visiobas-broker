@@ -234,6 +234,7 @@ services:
       - WILDFLY_USERNAME=${WILDFLY_USERNAME}
       - WILDFLY_PASSWORD=${WILDFLY_PASSWORD}
       - WILDFLY_NAME=${WILDFLY_NAME}
+      #- WILDFLY_HOST=visiodesk.net
     ports:
       - 9990:9990
     networks:
@@ -244,10 +245,11 @@ services:
          && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
     #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
     volumes:
-      - ./home/visiodesk:/opt/jboss/wildfly/welcome-content
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
+      - ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
+      #- ./home/visiodesk:/opt/jboss/wildfly/welcome-content
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
