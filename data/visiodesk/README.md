@@ -9,3 +9,10 @@ https://evilinside.ru/optimizaciya-i-tyuning-proizvoditelnosti-mariadb-mysql-ser
 ```
 https://habr.com/ru/post/277677/
 ```
+
+## Скрипт дает возможность скачать docker-образ без докера
+
+```
+https://habr.com/ru/post/484374/
+https://github.com/myback/docker_pull
+```
