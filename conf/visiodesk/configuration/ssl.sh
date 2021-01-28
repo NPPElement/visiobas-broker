@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #echo "APPLICATION KEYSTORE IS DELETED"
-# rm $JBOSS_HOME/standalone/configuration/application.keystore
+rm $JBOSS_HOME/standalone/configuration/application.keystore
 
 echo "ADDING AN APPLICATION KEYSTORE"
 cd $JBOSS_HOME/standalone/configuration/
