@@ -21,7 +21,7 @@ cd /opt/services
 sudo docker-compose down
 sudo git pull
 
-cd /opt/services/conf/visiodesk/welcome-content/
+cd /opt/welcome-content/
 sudo git pull
 
 cd /opt/services

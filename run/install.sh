@@ -47,7 +47,7 @@ cd /opt/services/conf/containers/
 # sudo wget -L http://cloud.visiodesk.ru/containers/visiodesk-server.tar
 
 # Установка клиента visiodesk в директорию /opt/services/conf/visiodesk/
-cd /opt/services/conf/visiodesk/
+cd /opt
 git clone https://github.com/NPPElement/visiodesk-client.git welcome-content
 
 # Создаем папки для файлов

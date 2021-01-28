@@ -204,17 +204,20 @@ services:
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   cloud9:
-    image: cloud9/shared
+    image: ghcr.io/linuxserver/cloud9
     container_name: cloud9
-    restart: always
-    ports:
-      - "8080:80"
     environment:
-      - VIRTUAL_HOST=${DOCKER_CLOUD9_HOSTNAME}
-      - CLOUD9_USER=${DOCKER_CLOUD9_USERNAME}
-      - CLOUD9_PASS=${DOCKER_CLOUD9_PASSWORD}
-      - LETSENCRYPT_HOST=${DOCKER_CLOUD9_HOSTNAME}
-      - LETSENCRYPT_EMAIL=${DOCKER_LETSENCRYPT_EMAIL}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USERNAME=admin #optional
+      - PASSWORD=admin #optional
+    volumes:
+      - /opt/welcome-content/svg:/code
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8000
+    restart: unless-stopped
 
   visiodesk:
     image: jboss/wildfly
@@ -240,9 +243,9 @@ services:
          && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
     #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
     volumes: 
+      - ./opt/welcome-content:/opt/jboss/wildfly/welcome-content
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
-      - ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
