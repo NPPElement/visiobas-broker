@@ -1,6 +1,7 @@
 .DS_Store
-/opt/services/conf/visiodesk/welcome-content
-/opt/services/data
-/opt/services/log
+data
+log
+home/visiodesk
+home/db-backup/*
 .env
 *.war.deployed
