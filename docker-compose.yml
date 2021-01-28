@@ -216,7 +216,7 @@ services:
       - /opt/welcome-content/svg:/code
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 9999:8000
+      - 8000:8000
     restart: unless-stopped
 
   visiodesk:
