@@ -13,22 +13,18 @@ networks:
 
 services:
 
-  nginx:
-    image: jwilder/nginx-proxy:latest
-    container_name: proxy
-    volumes:
-      - ./conf/nginx/www:/usr/share/nginx/html
-      - ./conf/nginx/conf:/etc/nginx/conf.d
-      - ./data/nginx/dhparam:/etc/nginx/dhparam
-      - ./data/nginx/vhost:/etc/nginx/vhost.d
-      - ./data/nginx/certs:/etc/nginx/certs
-      - /run/docker.sock:/tmp/docker.sock:ro
-    restart: "always"
-    ports:
-      - "80:80"
-      - "443:443"
+  portainer:
+    image:  portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=broker
     networks:
       - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
 
   rabbit1:
     image: rabbitmq:3-management
@@ -51,18 +47,22 @@ services:
       - ./data/rabbit:/var/lib/rabbitmq
       - ./log/rabbit:/var/log/rabbitmq
 
-  portainer:
-    image:  portainer/portainer-ce
-    container_name: portainer
-    restart: always
-    command: -H unix:///var/run/docker.sock
-    environment:
-      - VIRTUAL_HOST=broker
+  nginx:
+    image: jwilder/nginx-proxy:latest
+    container_name: proxy
+    volumes:
+      - ./conf/nginx/www:/usr/share/nginx/html
+      - ./conf/nginx/conf:/etc/nginx/conf.d
+      - ./data/nginx/dhparam:/etc/nginx/dhparam
+      - ./data/nginx/vhost:/etc/nginx/vhost.d
+      - ./data/nginx/certs:/etc/nginx/certs
+      - /run/docker.sock:/tmp/docker.sock:ro
+    restart: "always"
+    ports:
+      - "80:80"
+      - "443:443"
     networks:
       - backend
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data/portainer:/data
 
   master:
     hostname: master
