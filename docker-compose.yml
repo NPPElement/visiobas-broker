@@ -184,41 +184,41 @@ services:
     volumes:
      - /sessions
 
-  webdav:
-    image: jboss/wildfly
-    hostname: webdav
-    container_name: webdav
-    restart: always
-    user: root
-    environment:
-      - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
-      - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
-    networks:
-      backend:
-        ipv4_address: 172.16.16.40
-    command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
-    volumes: 
-      - ./home/visiodesk/svg:/opt/webdav/webdav-files
-      - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
-      - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
-      - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
+  # webdav:
+  #   image: jboss/wildfly
+  #   hostname: webdav
+  #   container_name: webdav
+  #   restart: always
+  #   user: root
+  #   environment:
+  #     - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
+  #     - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.16.16.40
+  #   command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
+  #   volumes: 
+  #     - ./home/visiodesk/svg:/opt/webdav/webdav-files
+  #     - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
+  #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
+  #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
-  cloud9:
-    image: kdelfour/cloud9-docker
-    container_name: cloud9
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - USERNAME=admin #optional
-      - PASSWORD=admin #optional
-    volumes:
-      - ./home/visiodesk/svg:/workspace
-      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 9999:80
-    restart: unless-stopped
+  # cloud9:
+  #   image: kdelfour/cloud9-docker
+  #   container_name: cloud9
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/London
+  #     - USERNAME=admin #optional
+  #     - PASSWORD=admin #optional
+  #   volumes:
+  #     - ./home/visiodesk/svg:/workspace
+  #     - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   ports:
+  #     - 9999:80
+  #   restart: unless-stopped
 
   visiodesk:
     image: jboss/wildfly
@@ -233,7 +233,6 @@ services:
       - WILDFLY_USERNAME=${WILDFLY_USERNAME}
       - WILDFLY_PASSWORD=${WILDFLY_PASSWORD}
       - WILDFLY_NAME=${WILDFLY_NAME}
-     # - CLUSTER_PW=admin
     ports:
       - 9990:9990
     networks:
