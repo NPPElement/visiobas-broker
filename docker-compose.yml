@@ -203,7 +203,7 @@ services:
   #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
   #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
-<<<<<<< HEAD
+
   # cloud9:
   #   image: kdelfour/cloud9-docker
   #   container_name: cloud9
@@ -220,23 +220,6 @@ services:
   #   ports:
   #     - 9999:80
   #   restart: unless-stopped
-=======
-  cloud9:
-    image: ghcr.io/linuxserver/cloud9
-    container_name: cloud9
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - USERNAME=admin #optional
-      - PASSWORD=admin #optional
-    volumes:
-      - /opt/welcome-content/svg:/code
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 8000:8000
-    restart: unless-stopped
->>>>>>> parent of fc27168... Update docker-compose.yml
 
   visiodesk:
     image: jboss/wildfly
@@ -268,4 +251,4 @@ services:
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      - ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
+      # - ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
