@@ -207,6 +207,8 @@ services:
     image: cloud9/shared
     container_name: cloud9
     restart: always
+    ports:
+      - "8080:80"
     environment:
       - VIRTUAL_HOST=${DOCKER_CLOUD9_HOSTNAME}
       - CLOUD9_USER=${DOCKER_CLOUD9_USERNAME}
