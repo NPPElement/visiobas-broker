@@ -203,19 +203,6 @@ services:
       - ./conf/visiodesk/welcome-content/svg:/opt/webdav/webdav-files
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
-  cloud9:
-  image: egoexpress/cloud9
-  #container_name: cloud9
-  restart: always
-  volumes_from:
-    - webdav
-  environment:
-    - VIRTUAL_HOST=${DOCKER_CLOUD9_HOSTNAME}
-    - CLOUD9_USER=${DOCKER_CLOUD9_USERNAME}
-    - CLOUD9_PASS=${DOCKER_CLOUD9_PASSWORD}
-    - LETSENCRYPT_HOST=${DOCKER_CLOUD9_HOSTNAME}
-    - LETSENCRYPT_EMAIL=${DOCKER_LETSENCRYPT_EMAIL}
-
   visiodesk:
     image: jboss/wildfly
     hostname: visiodesk
