@@ -36,6 +36,10 @@ echo ' '
 
 docker-compose exec maxscale maxctrl list servers
 
+# Установка сертификата
+sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+sudo docker restart visiodesk
+
 # Visiodesk запущен
 echo ' '
 echo '************************************'
