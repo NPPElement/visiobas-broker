@@ -11,7 +11,7 @@ passwd root
 Установка брокера visiodesk в директорию /opt/services
 ```
 cd /opt
-git clone https://github.com/NPPElement/visiobas-broker.git services
+sudo git clone https://github.com/NPPElement/visiobas-broker.git services
 sudo chmod 755 /opt/services
 ```
 Откройте файл template-env и замените пароли 
