@@ -222,7 +222,7 @@ services:
     restart: unless-stopped
 
   visiodesk:
-    image: jboss/wildfly
+    image: jboss/wildfly:21.0.2.Final
     hostname: visiodesk
     container_name: visiodesk
     restart: always
