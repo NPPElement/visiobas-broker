@@ -53,14 +53,20 @@ git clone https://github.com/NPPElement/visiodesk-client.git visiodesk
 # Создаем папки для файлов
 mkdir /opt/services/home/visiodesk/stub
 mkdir /opt/services/home/visiodesk/files
-mkdir /opt/services/home/visiodesk/svg
-mkdir /opt/services/home/visiodesk/svg/tiles
+
+# Для чистой установки
+# mkdir /opt/services/home/visiodesk/svg
+# mkdir /opt/services/home/visiodesk/svg/tiles
+
+# Для установки с данными
+cd /opt/services/home/visiodesk
+git clone https://github.com/NPPElement/svg-example.git svg
 
 # Установка шлюза visiobas в директорию /opt/services/conf/gateway/
 cd /opt
 git clone https://github.com/NPPElement/visiobas-gateway.git temp
-sudo cp -R /opt/temp/gateway /opt/services/conf/
-sudo rm -R /opt/temp/
+sudo cp -R /opt/temp/gateway /opt/services/conf
+sudo rm -R /opt/temp
 
 # Создадим файл с начальными паролями к приложениям
 cd /opt/services/
