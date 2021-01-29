@@ -204,22 +204,22 @@ services:
   #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
 
-  # cloud9:
-  #   image: kdelfour/cloud9-docker
-  #   container_name: cloud9
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Europe/London
-  #     - USERNAME=admin #optional
-  #     - PASSWORD=admin #optional
-  #   volumes:
-  #     - ./home/visiodesk/svg:/workspace
-  #     - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
-  #     #- /var/run/docker.sock:/var/run/docker.sock
-  #   ports:
-  #     - 9999:80
-  #   restart: unless-stopped
+  cloud9:
+    image: kdelfour/cloud9-docker
+    container_name: cloud9
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USERNAME=admin #optional
+      - PASSWORD=admin #optional
+    volumes:
+      - ./home/visiodesk/svg:/workspace
+      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+      #- /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:80
+    restart: unless-stopped
 
   visiodesk:
     image: jboss/wildfly
@@ -248,9 +248,9 @@ services:
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
-      - ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
-      #- ./home/visiodesk:/opt/jboss/wildfly/welcome-content
+      #- ./conf/visiodesk/welcome-content:/opt/jboss/wildfly/welcome-content
+      - ./home/visiodesk:/opt/jboss/wildfly/welcome-content
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      # - ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
+      - ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw

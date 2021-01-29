@@ -159,12 +159,12 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:/ScadaDS" pool-name="ScadaDS" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/vbas?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.60:4006/vbas?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <security>
-                        <user-name>root</user-name>
-                        <password>admin</password>
+                        <user-name>maxuser</user-name>
+                        <password>maxpwd</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -173,7 +173,7 @@
                     </validation>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/VdeskDS" pool-name="vdesk">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/vdesk?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.60:4006/vdesk?useUnicode=true&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=utf8&amp;characterEncoding=utf8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <pool>
@@ -181,8 +181,8 @@
                         <initial-pool-size>5</initial-pool-size>
                     </pool>
                     <security>
-                        <user-name>root</user-name>
-                        <password>admin</password>
+                        <user-name>maxuser</user-name>
+                        <password>maxpwd</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -191,12 +191,12 @@
                     </validation>
                 </datasource>
                 <datasource jta="true" jndi-name="java:/jboss/datasources/authDS" pool-name="authDS" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://172.16.16.51:3306/auth</connection-url>
+                    <connection-url>jdbc:mysql://172.16.16.60:4006/auth</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <security>
-                        <user-name>root</user-name>
-                        <password>admin</password>
+                        <user-name>maxuser</user-name>
+                        <password>maxpwd</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -204,59 +204,11 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
                     </validation>
                 </datasource>
-                <xa-datasource jndi-name="java:/XAPush" pool-name="xapush">
-                    <xa-datasource-property name="DatabaseName">
-                        vdesk_auth
-                    </xa-datasource-property>
-                    <xa-datasource-property name="ServerName">
-                        172.16.16.51
-                    </xa-datasource-property>
-                    <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
-                    <driver>mysql</driver>
-                    <xa-pool>
-                        <min-pool-size>5</min-pool-size>
-                        <initial-pool-size>5</initial-pool-size>
-                        <max-pool-size>10</max-pool-size>
-                    </xa-pool>
-                    <security>
-                        <user-name>root</user-name>
-                        <password>admin</password>
-                    </security>
-                    <validation>
-                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-                        <background-validation>true</background-validation>
-                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-                    </validation>
-                </xa-datasource>
-                <xa-datasource jndi-name="java:/XAVdesk" pool-name="xavdesk">
-                    <xa-datasource-property name="DatabaseName">
-                        vdesk
-                    </xa-datasource-property>
-                    <xa-datasource-property name="ServerName">
-                        172.16.16.51
-                    </xa-datasource-property>
-                    <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
-                    <driver>mysql</driver>
-                    <xa-pool>
-                        <min-pool-size>5</min-pool-size>
-                        <initial-pool-size>5</initial-pool-size>
-                        <max-pool-size>10</max-pool-size>
-                    </xa-pool>
-                    <security>
-                        <user-name>root</user-name>
-                        <password>admin</password>
-                    </security>
-                    <validation>
-                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-                        <background-validation>true</background-validation>
-                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-                    </validation>
-                </xa-datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
-                    <driver name="mysql" module="com.mysql.driver">
+                    <driver name="mysql" module="com.mysql.jdbc">
                         <driver-class>com.mysql.jdbc.Driver</driver-class>
                     </driver>
                 </drivers>
