@@ -95,6 +95,14 @@ docker-compose exec maxscale maxctrl list sessions
 docker-compose exec maxscale maxctrl list show sessions
 ```
 
+## Cloud9 ide
+Cloud9 ide - это онлайн IDE для редактирования и создания визуализаций и карт, позволяет одновременное редактирование от нескольких пользователей, предлагая несколько курсоров.
+
+```
+http://visiodesk.net:9999/
+```
+
+
 ## License
 GNU General Public License v3.0
 
