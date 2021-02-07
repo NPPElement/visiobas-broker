@@ -2,6 +2,7 @@
 version: '3.7'
 
 networks:
+  
   backend:
     driver: bridge
     ipam:
@@ -10,6 +11,14 @@ networks:
         - subnet: 172.16.16.0/24
           gateway: 172.16.16.1
           ip_range: 172.16.0.0/24
+  frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.17.17.0/24
+          gateway: 172.17.17.1
+          ip_range: 172.17.0.0/24
 
 services:
 
@@ -63,6 +72,23 @@ services:
       - "443:443"
     networks:
       - backend
+
+  maxscale:
+    container_name: maxscale
+    image: mariadb/maxscale:2.4
+    depends_on:
+      - master
+      - slave1
+      - slave2
+    volumes:
+      - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
+    networks:
+      backend:
+        ipv4_address: 172.16.16.60
+    ports:
+      - 4006:4006  # readwrite port
+      - 4008:4008  # readonly port
+      - 8989:8989  # REST API port
 
   master:
     hostname: master
@@ -123,23 +149,6 @@ services:
     ports:
       - "4003:3306"
 
-  maxscale:
-    container_name: maxscale
-    image: mariadb/maxscale:2.4
-    depends_on:
-      - master
-      - slave1
-      - slave2
-    volumes:
-      - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
-    networks:
-      backend:
-        ipv4_address: 172.16.16.60
-    ports:
-      - 4006:4006  # readwrite port
-      - 4008:4008  # readonly port
-      - 8989:8989  # REST API port
-
   dbclient:
     hostname: dbclient
     container_name: dbclient
@@ -152,8 +161,7 @@ services:
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
     networks:
-      backend:
-        ipv4_address: 172.16.16.42
+      - backend
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -179,8 +187,7 @@ services:
     - PMA_ARBITRARY=1
     restart: always
     networks:
-      backend:
-        ipv4_address: 172.16.16.41
+      - backend
     volumes:
      - /sessions
 
@@ -219,6 +226,8 @@ services:
       #- /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 9999:80
+    networks:
+      - frontend
     restart: unless-stopped
 
   visiodesk:
@@ -238,8 +247,7 @@ services:
     ports:
       - 9990:9990
     networks:
-      backend:
-        ipv4_address: 172.16.16.50
+      - backend
     command: >
          bash -c "/opt/jboss/wildfly/bin/add-user.sh $$WILDFLY_USERNAME $$WILDFLY_PASSWORD --silent
          && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
