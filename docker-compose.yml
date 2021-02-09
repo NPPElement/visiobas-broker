@@ -236,6 +236,7 @@ services:
       - WILDFLY_PASSWORD=${WILDFLY_PASSWORD}
       - WILDFLY_NAME=${WILDFLY_NAME}
       - 'VISIODESK_VBAS_CONNECT_STRING=jdbc:mysql://172.16.16.60:4006/vbas?useUnicode=true&connectionCollation=utf8_general_ci&characterSetResults=utf8&characterEncoding=utf8&user=maxuser&password=maxpwd'
+      - DB_LINK=172.16.16.60
       #- WILDFLY_HOST=visiodesk.net
     ports:
       - 9990:9990
