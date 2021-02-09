@@ -37,6 +37,7 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
       RABBITMQ_DEFAULT_VHOST: "/manager/rabbit/"
     ports:
+      - 15675:15675
       - 1883:1883
       - 8883:8883
     user: root
