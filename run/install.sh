@@ -25,8 +25,13 @@ sudo apt --assume-yes upgrade
 
 # Установка необходимых приложений
 sudo apt --assume-yes install docker docker.io 
-sudo apt --assume-yes install htop mc 
+sudo apt --assume-yes install htop mc curl
 sudo apt --assume-yes install git jq
+
+# Установить ImageMagick
+sudo apt --assume-yes install imagemagick
+# Установить gbal
+sudo apt --assume-yes install gdal-bin python-gdal python3-gdal 
 
 # Установка docker-compose
 DESTINATION=/usr/bin/docker-compose
@@ -61,6 +66,8 @@ mkdir /opt/services/home/visiodesk/files
 # Для установки с данными
 cd /opt/services/home/visiodesk
 git clone https://github.com/NPPElement/svg-example.git svg
+
+cp -r /opt/services/conf/map /opt/services/home/visiodesk/map
 
 # Установка шлюза visiobas в директорию /opt/services/conf/gateway/
 cd /opt
