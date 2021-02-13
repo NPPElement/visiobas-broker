@@ -119,7 +119,6 @@ CREATE TABLE IF NOT EXISTS `trendlog` (
   `status` tinyint(4) NOT NULL,
   `timestamp` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
   `timestamp_prev` datetime(3) DEFAULT NULL,
-  `Столбец 10` decimal(5,2) DEFAULT NULL,
   KEY `id` (`id`),
   KEY `device_id` (`device_id`),
   KEY `Object_Identifier` (`Object_Identifier`),
