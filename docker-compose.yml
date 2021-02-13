@@ -11,14 +11,6 @@ networks:
         - subnet: 172.16.16.0/24
           gateway: 172.16.16.1
           ip_range: 172.16.0.0/24
-  frontend:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.17.17.0/24
-          gateway: 172.17.17.1
-          ip_range: 172.17.0.0/24
 
 services:
 
@@ -227,8 +219,6 @@ services:
       #- /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 9999:80
-    networks:
-      - frontend
     restart: unless-stopped
 
   visiodesk:
