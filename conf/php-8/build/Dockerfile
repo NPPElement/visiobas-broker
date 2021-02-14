@@ -1,7 +1,5 @@
 FROM php:8.0-rc-cli
 
-COPY ./conf/php-8/build/opcache.ini /usr/local/etc/php/conf.d/
-
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install apt-utils -y \
 #
