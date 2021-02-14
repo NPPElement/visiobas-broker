@@ -281,6 +281,8 @@ services:
     container_name: php-8
     image: php-8
     restart: unless-stopped
+    ports:
+      - 9000:9000
     volumes:
       - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
