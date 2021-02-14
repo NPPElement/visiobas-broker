@@ -289,7 +289,7 @@ services:
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
       - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./conf/php-8/composer/:/root/.composer/
-      - ./conf/php-8/projects/:/var/www
+      - ./conf/php-8/projects/:/var/www/html
     logging:
       driver: "json-file"
       options:
