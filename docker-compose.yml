@@ -281,12 +281,18 @@ services:
     container_name: php-8
     image: php-8
     restart: unless-stopped
+    entrypoint: "php -S 0.0.0.0:8000"
     ports:
-      - 9000:9000
+      - 8000:8000
     volumes:
       - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
       - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./conf/php-8/composer/:/root/.composer/
       - ./conf/php-8/projects/:/srv/projects/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1024k"
+        max-file: "2"
       
