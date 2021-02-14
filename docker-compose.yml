@@ -277,7 +277,7 @@ services:
       #- ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
 
   php-8:
-    build: ./docker/php-8/build
+    build: ./conf/php-8/build
     image: php-8
     restart: unless-stopped
     volumes:
