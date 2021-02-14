@@ -82,6 +82,7 @@ sudo rm -R template-env
 
 # Запускаем контейнеры
 cd /opt/services
+sudo docker-compose build
 #docker load -i /opt/services/conf/containers/visiodesk-server.tar
 sudo docker-compose up -d --force-recreate
 
