@@ -278,6 +278,7 @@ services:
 
   php-8:
     build: ./conf/php-8/build
+    container_name: php-8
     image: php-8
     restart: unless-stopped
     volumes:
