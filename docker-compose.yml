@@ -286,4 +286,4 @@ services:
       - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./conf/php-8/composer/:/root/.composer/
       - ./conf/php-8/projects/:/srv/projects/
-    logging: *default-logging
+      
