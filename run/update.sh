@@ -26,6 +26,7 @@ sudo git pull
 
 # Соберем и запустим контейнеры 
 cd /opt/services
+sudo docker-compose build
 sudo docker-compose up -d --force-recreate
 
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
