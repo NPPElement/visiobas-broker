@@ -221,6 +221,22 @@ services:
       - 9999:80
     restart: unless-stopped
 
+  cloud9:
+    image: kdelfour/cloud9-docker
+    container_name: cloud9-php
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USERNAME=admin #optional
+      - PASSWORD=admin #optional
+    volumes:
+      - ./conf/php8/projects:/workspace
+      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+    ports:
+      - 9998:80
+    restart: unless-stopped
+
   visiodesk:
     image: jboss/wildfly:21.0.2.Final
     hostname: visiodesk
