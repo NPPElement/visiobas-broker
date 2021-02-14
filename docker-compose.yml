@@ -259,3 +259,15 @@ services:
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
       #- ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
+
+  php-8:
+    build: ./docker/php-8/build
+    image: php-8
+    restart: unless-stopped
+    volumes:
+      - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
+      - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
+      - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./conf/php-8/composer/:/root/.composer/
+      - ./home/php-projects/:/srv/projects/
+    logging: *default-logging
