@@ -3213,21 +3213,21 @@ CREATE TRIGGER `trigger_object_change` AFTER UPDATE ON `objects` FOR EACH ROW BE
 
 	    CASE NEW.Object_Type
 	    WHEN 'analog-input' THEN
-            IF (SELECT id from `objects.analog-input` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=COV_Increment)) THEN
+            IF (SELECT id from `objects.analog-input` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=IFNULL(COV_Increment, 1))) THEN
 			    SET yesLoggin = TRUE;
 --                INSERT INTO `log`.`trendlog` (`value`,`status`, `device_id`, `Object_Identifier`,`Object_Type`) VALUES (NEW.value, NEW.status, NEW.device_id, NEW.Object_Identifier, NEW.Object_Type);
                 UPDATE `objects.analog-input` SET `objects.analog-input`.last_log_value=NEW.value WHERE id=NEW.id;
             END IF;
 
 	    WHEN 'analog-output' THEN
-            IF (SELECT id from `objects.analog-output` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=COV_Increment)) THEN
+            IF (SELECT id from `objects.analog-output` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=IFNULL(COV_Increment, 1))) THEN
 			    SET yesLoggin = TRUE;
 --                INSERT INTO `log`.`trendlog` (`value`,`status`, `device_id`, `Object_Identifier`,`Object_Type`) VALUES (NEW.value, NEW.status, NEW.device_id, NEW.Object_Identifier, NEW.Object_Type);
                 UPDATE `objects.analog-output` SET `objects.analog-output`.last_log_value=NEW.value WHERE id=NEW.id;
             END IF;
 
 	    WHEN 'analog-value' THEN
-            IF (SELECT id from `objects.analog-value` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=COV_Increment)) THEN
+            IF (SELECT id from `objects.analog-value` WHERE id=NEW.id AND (last_log_value IS NULL OR ABS(NEW.value-last_log_value)>=IFNULL(COV_Increment, 1))) THEN
 			    SET yesLoggin = TRUE;
 --                INSERT INTO `log`.`trendlog` (`value`,`status`, `device_id`, `Object_Identifier`,`Object_Type`) VALUES (NEW.value, NEW.status, NEW.device_id, NEW.Object_Identifier, NEW.Object_Type);
                 UPDATE `objects.analog-value` SET `objects.analog-value`.last_log_value=NEW.value WHERE id=NEW.id;
