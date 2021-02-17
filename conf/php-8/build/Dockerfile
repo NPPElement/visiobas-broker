@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get install git zip vim libzip-dev libgmp-dev libffi-dev libssl-dev -y \
 #
 #    Включаем необходимые расширения
-    && docker-php-ext-install -j$(nproc) sockets zip gmp pcntl bcmath ffi \
+    && docker-php-ext-install -j$(nproc) sockets zip gmp pcntl bcmath ffi mysqli \
 #
 #    Расшерения через pecl ставятся так, то в php8 pecl сейчас отсуствует, так что строки закоментированы
 #    && PHP_OPENSSL=yes pecl install ev \
