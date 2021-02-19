@@ -1,1 +1,1 @@
-{"1":{"zak":120,"type":3,"ready":120,"speed":4.4,"time":1613539648,"nextTo":0},"2":{"zak":0,"type":3,"ready":80,"speed":4.2,"time":1613539631,"nextTo":1613539648},"3":{"zak":120,"type":1,"ready":0,"speed":3.2,"time":1613539648,"nextTo":0}}
+{"1":{"zak":0,"type":2,"ready":50,"speed":3.9,"time":1613733117,"nextTo":1613733148},"2":{"zak":0,"type":2,"ready":80,"speed":4.2,"time":1613733120,"nextTo":1613733152},"3":{"zak":0,"type":3,"ready":120,"speed":6.6,"time":1613733138,"nextTo":1613733182}}

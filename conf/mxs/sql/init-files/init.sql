@@ -1,5 +1,9 @@
 SET foreign_key_checks = 0;
 
+
+
+
+
 -- Дамп структуры базы данных auth
 DROP DATABASE IF EXISTS `auth`;
 CREATE DATABASE IF NOT EXISTS `auth` /*!40100 DEFAULT CHARACTER SET latin1 */;
@@ -3278,6 +3282,9 @@ CREATE DATABASE IF NOT EXISTS `vdesk` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `vdesk`;
 
 
+
+
+
 -- Дамп структуры для таблица vdesk.access_rights
 DROP TABLE IF EXISTS `access_rights`;
 CREATE TABLE IF NOT EXISTS `access_rights` (
@@ -3594,6 +3601,252 @@ BEGIN
 	RETURN topicId;
 END//
 DELIMITER ;
+
+
+
+use `vdesk`;
+
+
+DROP EVENT IF EXISTS `event_chech_topic_hold_to`;
+DELIMITER //
+CREATE  EVENT `event_chech_topic_hold_to`
+	ON SCHEDULE
+		EVERY 15 SECOND STARTS '2021-02-01 11:39:54'
+	ON COMPLETION NOT PRESERVE
+	ENABLE
+	COMMENT 'Проверяет не нужно ли сменить статус (не закончился ли срок выпо'
+	DO BEGIN
+	DECLARE topicId INT;
+	DECLARE prevId INT;
+	DECLARE statusId INT;
+	DECLARE authorId INT;
+
+	DECLARE userId INT DEFAULT NULL;
+
+	DECLARE flag INT DEFAULT 0;
+	DECLARE cur CURSOR FOR SELECT DISTINCT id, status_id, author_id FROM `topic` WHERE hold_to<NOW() AND status_id IN(1, 3, 4, 5);
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET flag = 1;
+
+	OPEN cur;
+
+	WHILE flag = 0 DO
+		FETCH cur INTO topicId, statusId, authorId;
+			IF flag=0 THEN
+
+		    CASE statusId
+		    	WHEN 1 THEN
+		    		CALL vbas.func_debug( CONCAT("Должен быть взят в работу топик #", topicId));
+					CALL func_change_topic_status_by_system(topicId, 1,  1000*UNIX_TIMESTAMP( func_get_topic_hold_to_settings(topicId, 1)) );
+
+		    	WHEN 3 THEN
+--  		    		CALL vbas.func_debug( CONCAT("Должен быть сделан топик #", topicId ) );
+ 		    		CALL vbas.func_debug( CONCAT("Должен быть взят в работу топик #", topicId ) );
+					CALL func_change_topic_status_by_system(topicId, 1,  1000*UNIX_TIMESTAMP( func_get_topic_hold_to_settings(topicId, 1)) ) ;
+
+		    	WHEN 4 THEN
+		    		CALL vbas.func_debug( CONCAT("Стал новым #", topicId));
+					CALL func_change_topic_status_by_system(topicId, 1, 1000*UNIX_TIMESTAMP( func_get_topic_hold_to_settings(topicId, 1))  );
+
+		    	WHEN 5 THEN
+		    		CALL vbas.func_debug( CONCAT("Должен быть проверен топик #", topicId));
+					CALL func_change_topic_status_by_system(topicId, 5, 1000*UNIX_TIMESTAMP( func_get_topic_hold_to_settings(topicId, 5))  );
+			END CASE;
+
+		END IF;
+	END WHILE;
+
+	CLOSE cur;
+END//
+DELIMITER ;
+
+
+
+
+
+
+DROP PROCEDURE IF EXISTS `func_change_topic_status_by_system`;
+DELIMITER //
+CREATE PROCEDURE `func_change_topic_status_by_system`(IN `topicId` INT, IN `statusId` INT, IN `holdMills` BIGINT)
+	LANGUAGE SQL
+	DETERMINISTIC
+	CONTAINS SQL
+	SQL SECURITY DEFINER
+	COMMENT ''
+BEGIN
+	DECLARE userId INT;
+	DECLARE insId INT;
+	DECLARE statusName VARCHAR(50);
+
+	CALL vbas.func_debug( CONCAT("func_change_topic_status_by_system #", topicId, " hm:", holdMills));
+
+	SELECT name FROM `status` WHERE id=statusId INTO statusName;
+
+	SELECT id FROM `user` WHERE login='visiodesk' INTO userId;
+
+	CALL vbas.func_debug( CONCAT("visiodesk user #", userId));
+
+	IF userId IS NULL THEN
+		SELECT author_id FROM `topic` WHERE id=topicId INTO userId;
+		CALL vbas.func_debug( CONCAT("topic(!vd) user #", userId));
+	ELSE
+		CALL vbas.func_debug( CONCAT("Польззователь найден: ", userId));
+	END IF;
+
+	INSERT INTO `topic_item` (`created_at`,`type_id`, `liked`, `topic_id`,`author_id`,`status_id`,`name`,`text`, hold_millis) VALUES (NOW(), 6, 0, topicId, userId, statusId, "Изменение статуса системой", statusName, holdMills);
+
+	SELECT LAST_INSERT_ID() INTO insId;
+
+	CALL vbas.func_debug( CONCAT("LAST_INSERT_ID #", insId));
+
+	-- UPDATE topic SET hold_to=NULL WHERE id=topicId;
+END//
+DELIMITER ;
+
+
+DROP FUNCTION IF EXISTS `func_get_topic_hold_to_settings`;
+DELIMITER //
+CREATE FUNCTION `func_get_topic_hold_to_settings`(`topicId` INT, `statusId` INT)
+	RETURNS datetime
+	LANGUAGE SQL
+	DETERMINISTIC
+	CONTAINS SQL
+	SQL SECURITY DEFINER
+	COMMENT ''
+BEGIN
+	DECLARE priorityId INT;
+	DECLARE time_minutes INT;
+	SELECT priority_id FROM topic WHERE id=topicId INTO priorityId;
+
+	CASE statusId
+		WHEN 1 THEN
+		 	SELECT plan_inwork FROM priority_group WHERE group_id IN (SELECT group_id FROM bind_topic_group WHERE topic_id=topicId) AND priority_id=priorityId ORDER BY plan_inwork LIMIT 0, 1 INTO time_minutes;
+		 	IF time_minutes IS NULL THEN
+		 		SELECT plan_inwork FROM priority WHERE id=priorityId INTO time_minutes;
+			END IF;
+
+		WHEN 3 THEN
+		 	SELECT plan_ready FROM priority_group WHERE group_id IN (SELECT group_id FROM bind_topic_group WHERE topic_id=topicId) AND priority_id=priorityId ORDER BY plan_ready LIMIT 0, 1 INTO time_minutes;
+		 	IF time_minutes IS NULL THEN
+		 		SELECT plan_ready FROM priority WHERE id=priorityId INTO time_minutes;
+			END IF;
+
+		WHEN 4 THEN
+		 	SELECT plan_inwork FROM priority_group WHERE group_id IN (SELECT group_id FROM bind_topic_group WHERE topic_id=topicId) AND priority_id=priorityId ORDER BY plan_inwork LIMIT 0, 1 INTO time_minutes;
+		 	IF time_minutes IS NULL THEN
+		 		SELECT plan_inwork FROM priority WHERE id=priorityId INTO time_minutes;
+			END IF;
+
+		WHEN 5 THEN
+		 	SELECT plan_verify FROM priority_group WHERE group_id IN (SELECT group_id FROM bind_topic_group WHERE topic_id=topicId) AND priority_id=priorityId ORDER BY plan_verify LIMIT 0, 1 INTO time_minutes;
+		 	IF time_minutes IS NULL THEN
+		 		SELECT plan_verify FROM priority WHERE id=priorityId INTO time_minutes;
+			END IF;
+	END CASE;
+
+
+
+	RETURN DATE_ADD(NOW(), INTERVAL time_minutes MINUTE);
+END//
+DELIMITER ;
+
+
+
+
+
+
+
+DROP TRIGGER IF EXISTS `trigger_topic_item_after_insert`;
+DELIMITER //
+CREATE TRIGGER `trigger_topic_item_after_insert` AFTER INSERT ON `topic_item` FOR EACH ROW
+BEGIN
+	DECLARE currentRemovedAt 	DATETIME;
+
+-- Устанавливаем последний итем
+ 	UPDATE user_topic_subscribe SET last_id = NEW.id WHERE topic_id=NEW.topic_id;
+
+-- Устанавливаем последний итем статуса
+ 	IF NEW.type_id=6 THEN
+
+		CALL vbas.func_debug(CONCAT("trigger_topic_item_after_insert(", NEW.id,", topic: ", NEW.topic_id, ", status: ", NEW.status_id, ", time: ", NEW.hold_millis ,")"));
+ 		CASE NEW.status_id
+ 		-- HOLD ON + other
+-- , terminated_to = FROM_UNIXTIME( NEW.hold_millis/1000 )
+ 			WHEN 1 THEN
+
+ 				CALL vbas.func_debug(CONCAT("SET 1: ", FROM_UNIXTIME( NEW.hold_millis/1000 )));
+	 			UPDATE topic SET status_id = NEW.status_id, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 3 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 4 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 5 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+	 	-- CLOSE
+ 			WHEN 6 THEN
+				UPDATE topic SET status_id = NEW.status_id, topic.removed_at=NOW() , topic.closed=1  WHERE id=NEW.topic_id;
+
+ 			ELSE
+				SELECT removed_at FROM topic WHERE id=NEW.topic_id INTO currentRemovedAt;
+-- 				CALL vbas.func_debug(CONCAT("removed_at(",NEW.topic_id,") = ", currentRemovedAt));
+ 				IF currentRemovedAt IS NOT NULL  THEN
+-- 					CALL vbas.func_debug(CONCAT("SET NULL  removed_at (",NEW.topic_id,")"));
+
+					UPDATE topic SET status_id = NEW.status_id, removed_at=NULL, closed=0 WHERE id=NEW.topic_id;
+				ELSE
+					UPDATE topic SET status_id = NEW.status_id WHERE id=NEW.topic_id;
+ 				END IF;
+		END CASE;
+
+
+ 	 	UPDATE user_topic_subscribe SET last_status_item_id = NEW.id WHERE topic_id=NEW.topic_id;
+
+ 	-- Если закрывается заявка, обнулить нужно активные откртые топики в таблице слежения за объектами
+ 	 	IF NEW.status_id = 6 THEN
+ 	 		UPDATE `vbas`.object_looks SET topic_id=0 WHERE topic_id = NEW.topic_id;
+ 	 		UPDATE `vbas`.object_looks SET fault_topic_id=0 WHERE fault_topic_id = NEW.topic_id;
+ 	 	END IF;
+
+ 	END IF;
+
+
+
+ 	IF NEW.type_id=5 THEN
+		UPDATE topic SET priority_id = NEW.priority_id WHERE id=NEW.topic_id;
+ 	END IF;
+
+-- term_date_plan
+ 	IF NEW.type_id=8 THEN
+		UPDATE topic SET topic.terminated_to = FROM_UNIXTIME(NEW.text/1000) WHERE id=NEW.topic_id;
+ 	END IF;
+
+
+-- Устанавливаем последний прочитанный пользтвателем итем
+ 	IF NEW.type_id=14 THEN
+ 	 	UPDATE user_topic_subscribe SET checked_id = NEW.id WHERE topic_id=NEW.topic_id AND user_id=NEW.author_id;
+ 	END IF;
+
+ 	IF NEW.type_id=17 THEN
+		UPDATE topic SET topic.description = NEW.text WHERE id=NEW.topic_id;
+	END IF;
+
+
+--  Установка checked
+ 	UPDATE user_topic_subscribe SET
+	 	changed=if((closed=0 AND on_hold=0 AND checked_id<last_id AND (is_author=1 OR is_inwork=1 OR is_binded=1 OR (is_group=1 AND (support_date IS NOT NULL) AND support_date<NOW()))),1,0)
+		 WHERE topic_id=NEW.topic_id;
+
+    UPDATE `vdesk`.`topic` SET last_item_id=NEW.id WHERE id=NEW.topic_id AND last_item_id < NEW.id;
+
+END//
+DELIMITER ;
+
+
+
+
 
 
 -- Дамп структуры для таблица vdesk.group
