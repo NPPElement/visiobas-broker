@@ -300,9 +300,8 @@ services:
       - 9998:80
     restart: unless-stopped
       
-  services:
+  vb_gateway:
     container_name: getawey
-    vb_gateway:
       build:
         context: .
         dockerfile: ./home/gateway/Dockerfile
