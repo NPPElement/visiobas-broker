@@ -272,6 +272,8 @@ services:
     working_dir: /app
     ports:
       - 8000:8000
+    networks:
+      - backend
     volumes:
       - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
@@ -296,6 +298,8 @@ services:
     volumes:
       - ./conf/php-8/projects:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+    networks:
+      - backend
     ports:
       - 9998:80
     restart: unless-stopped
@@ -324,6 +328,8 @@ services:
       - ./conf/gateway/bacnet/address_cache:/visiobas-gateway/connectors/bacnet/address_cache
       - ./conf/gateway/modbus/address_cache:/visiobas-gateway/connectors/modbus/address_cache
     command: python -OO __main__.py
+    networks:
+      - backend
     ports:
       - 502:502
       #- 1883:1883
@@ -331,18 +337,3 @@ services:
       - 8088:8080
       #- 8883:8883
       - 47808:47808
-      - 47809:47809
-      - 47810:47810
-      - 47811:47811
-      - 47812:47812
-      - 47813:47813
-      - 47814:47814
-      - 47815:47815
-      - 47816:47816
-      - 47817:47817
-      - 47818:47818
-      - 47819:47819
-      - 47820:47820
-      - 47821:47821
-      - 47822:47822
-      - 47823:47823
