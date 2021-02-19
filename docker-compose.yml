@@ -41,6 +41,9 @@ services:
       - 15675:15675
       - 1883:1883
       - 8883:8883
+    networks:
+      backend:
+        ipv4_address: 172.16.16.30
     user: root
     networks:
       - backend
@@ -288,8 +291,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
-      - USERNAME=admin #optional
-      - PASSWORD=admin #optional
+      - USERNAME=admin
+      - PASSWORD=admin
     volumes:
       - ./conf/php-8/projects:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
