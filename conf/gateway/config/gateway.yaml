@@ -1,0 +1,24 @@
+# All periods in seconds.
+
+gateway:
+  update_period: 3600
+
+verifier:
+#  http_enable: false
+#  mqtt_enable: true
+
+api:
+  host: localhost
+  port: 7070
+
+  sleep_period: 60
+
+connector:
+  bacnet:
+    default_upd_period: 10
+    delay_bac0_attempt: 30
+    # delay_inactive: 60 todo
+
+  modbus:
+    default_upd_period: 10
+

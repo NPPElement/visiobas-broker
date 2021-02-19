@@ -6,3 +6,5 @@ home/db-backup/*
 home/configuration/application.keystore
 .env
 *.war.deployed
+conf/nginx/conf/default.conf
+home/gateway/*
