@@ -302,9 +302,7 @@ services:
       
   vb_gateway:
     container_name: getawey
-    build:
-      context: .
-      dockerfile: ./home/gateway/Dockerfile
+    build: ./home/gateway/
     image: visiobas-gateway:0.1.2
     #    logging:
     #     driver: none
