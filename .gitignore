@@ -6,3 +6,6 @@ home/db-backup/*
 home/configuration/application.keystore
 .env
 *.war.deployed
+conf/gateway
+conf/nginx/conf/default.conf
+.c9/
