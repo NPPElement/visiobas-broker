@@ -41,6 +41,9 @@ services:
       - 15675:15675
       - 1883:1883
       - 8883:8883
+    networks:
+      backend:
+        ipv4_address: 172.16.16.30
     user: root
     networks:
       - backend
@@ -269,6 +272,8 @@ services:
     working_dir: /app
     ports:
       - 8000:8000
+    networks:
+      - backend
     volumes:
       - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
@@ -288,12 +293,47 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
-      - USERNAME=admin #optional
-      - PASSWORD=admin #optional
+      - USERNAME=admin
+      - PASSWORD=admin
     volumes:
       - ./conf/php-8/projects:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+    networks:
+      - backend
     ports:
       - 9998:80
     restart: unless-stopped
       
+  vb_gateway:
+    container_name: getawey
+    build: ./home/gateway/
+    image: visiobas-gateway:0.1.2
+    #    logging:
+    #     driver: none
+    #      driver: "json-file"
+    #      options:
+    #        max-file: 3
+    #        max-size: 50m
+    restart: always
+    user: root
+    environment:
+      - TZ=Europe/Moscow
+      - PYTHONPATH=/
+      # Logging
+      - LOG_LEVEL=INFO
+      - FILE_LOG_LEVEL=INFO
+    volumes:
+      - ./log/gateway:/visiobas-gateway/logs/:rw
+      - ./conf/gateway/config:/visiobas-gateway/gateway/config
+      - ./conf/gateway/bacnet/address_cache:/visiobas-gateway/connectors/bacnet/address_cache
+      - ./conf/gateway/modbus/address_cache:/visiobas-gateway/connectors/modbus/address_cache
+    command: python -OO __main__.py
+    networks:
+      - backend
+    ports:
+      - 502:502
+      #- 1883:1883
+      - 7070:7070
+      - 8088:8080
+      #- 8883:8883
+      - 47808:47808

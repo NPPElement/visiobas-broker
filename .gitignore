@@ -9,3 +9,4 @@ home/configuration/application.keystore
 conf/gateway
 conf/nginx/conf/default.conf
 .c9/
+.gitignore
