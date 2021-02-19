@@ -156,20 +156,23 @@ function serviceZak($k) {
 
 function initZap($k) {
     global $z;
-    $vol = randFuelVolume();
-    $fuels = ["98","95","DT"];
+    $fuels = ["98","95","DT", "95"];
 
 //    $fuels = ["DT"];
     shuffle($fuels);
     $type = false;
-    foreach ($fuels as $f) if( !is_file($f.".tank") && isFuel($f, $vol)) {$type=normT($f); break; }
+    foreach ($fuels as $f) {
+        $vol = randFuelVolume($f==="DT");
+        if( !is_file($f.".tank") && isFuel($f, $vol)) {$type=normT($f); break; }
+    }
     if(!$type) return false;
 
+    $typeDT = normT("DT");
     $z[$k] = [
         "zak"=>$vol,
         "type"=>$type,
         "ready" => -1,
-        "speed"=>rand(20,50)/10, // litr/sec
+        "speed"=> $typeDT==$type ?  rand(40,100)/10 :  rand(20,50)/10, // litr/sec
         "time"=>time(),
         "nextTo"=>0
     ];

@@ -2,6 +2,10 @@
 <?php
 set_time_limit(60*20);
 
+echo "tets";
+die();
+
+
 include_once "lib/mysql.php";
 include_once "lib/mymqtt.php";
 define("FILE_ZERO", "zero.json");

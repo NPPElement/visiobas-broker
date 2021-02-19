@@ -69,8 +69,8 @@ function setValue($reference, $value) {
 }
 
 
-function randFuelVolume() {
-    $vols = [20,50,80,120];
+function randFuelVolume($maxi = false) {
+    $vols = $maxi ? [20,50,80,120,200,300] :  [20,50,80,120];
     $vol = $vols[array_rand($vols)];
     return $vol;
 }
@@ -84,6 +84,8 @@ function isFuel($marka, $volume=0) {
     if(!$existsFuel && !is_file($marka.".tank")) {
         file_put_contents( $marka.".tank", time() + rand(50,600));
     }
+
+    if($existsFuel && is_file($marka.".tank") && (time()-filemtime($marka.".tank")>60*5) ) unlink($marka.".tank");
 
     return $existsFuel;
 }
