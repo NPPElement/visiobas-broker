@@ -323,7 +323,7 @@ services:
       - LOG_LEVEL=INFO
       - FILE_LOG_LEVEL=INFO
     volumes:
-      - ./log/gateway/logs:/visiobas-gateway/logs
+      - ./log/gateway:/visiobas-gateway/logs/:rw
       - ./conf/gateway/config:/visiobas-gateway/gateway/config
       - ./conf/gateway/bacnet/address_cache:/visiobas-gateway/connectors/bacnet/address_cache
       - ./conf/gateway/modbus/address_cache:/visiobas-gateway/connectors/modbus/address_cache
