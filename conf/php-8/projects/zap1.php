@@ -163,6 +163,7 @@ function initZap($k) {
     $type = false;
     foreach ($fuels as $f) {
         $vol = randFuelVolume($f==="DT");
+        if(is_file($f.".tank") && (time()-filemtime($f.".tank")>60*5) ) unlink($f.".tank");
         if( !is_file($f.".tank") && isFuel($f, $vol)) {$type=normT($f); break; }
     }
     if(!$type) return false;
