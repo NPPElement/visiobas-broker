@@ -92,6 +92,11 @@ sudo docker-compose up -d --force-recreate
 
 # Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
+
+# Установка дополнительных сервисов
+sudo docker exec -it visiodesk cp /opt/services/wf_periodic.service /etc/systemd/system/wf_periodic.service
+
+# Перезапуск контейнера
 sudo docker restart visiodesk
 
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
