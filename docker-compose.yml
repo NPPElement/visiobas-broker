@@ -150,10 +150,10 @@ services:
     container_name: dbclient
     image: alpine
     depends_on:
-      - maxscale
+      - master
     environment:
       - BACKUP_ENABLED=1
-      - BACKUP_INTERVAL=3600
+      - BACKUP_INTERVAL=86400
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
     networks:
