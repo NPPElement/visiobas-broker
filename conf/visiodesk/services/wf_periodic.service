@@ -1,0 +1,18 @@
+# periodiq request to /vdesk/external/task/push
+# for send push and user subscribe 
+# разместить файл нужно в /etc/systemd/system/wf_periodic.service
+# запуск сервиса  'systemctl start wf_periodic'
+
+
+[Unit]
+Description=Visiodesk periodic tools
+
+[Service]
+Type=simple
+ExecStart=/opt/services/wf_periodic.sh
+User=root
+Group=root
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

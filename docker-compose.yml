@@ -255,6 +255,7 @@ services:
     #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
     volumes:
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./conf/visiodesk/services:/opt/services
       - ./conf/visiodesk/modules/mysql:/opt/jboss/wildfly/modules/system/layers/base/com/mysql
       - ./conf/visiodesk/modules/common:/opt/jboss/wildfly/modules/system/layers/base/net/visiodesk/common
       - ./home/visiodesk:/opt/jboss/wildfly/welcome-content
