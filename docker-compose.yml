@@ -231,7 +231,7 @@ services:
     restart: always
     user: root
     links:
-      - maxscale
+      - master
     environment:
       - WILDFLY_PUBLIC_CONSOLE=1
       - WILDFLY_USERNAME=${WILDFLY_USERNAME}
