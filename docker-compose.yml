@@ -301,7 +301,7 @@ services:
       - 9998:80
     restart: unless-stopped
 
-    php-8-1:
+  php-8-1:
     build: ./conf/php-8/build
     container_name: php-8-1
     image: php-8
