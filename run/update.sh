@@ -32,7 +32,7 @@ sudo docker-compose up -d --force-recreate
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
 echo ' '
 
-docker-compose exec maxscale maxctrl list servers
+#docker-compose exec maxscale maxctrl list servers
 
 # Установка сертификата
 sudo docker exec -it visiodesk sh /opt/jboss/wildfly/standalone/configuration/ssl.sh
