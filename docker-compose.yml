@@ -41,9 +41,6 @@ services:
       - 15675:15675
       - 1883:1883
       - 8883:8883
-    networks:
-      backend:
-        ipv4_address: 172.16.16.30
     user: root
     networks:
       - backend
@@ -103,11 +100,6 @@ services:
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
       - ./data/db-master:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
-    networks:  
-      backend:
-        ipv4_address: 172.16.16.60
-    ports:
-      - "4006:3306"
 
   # slave1:
   #   hostname: slave1
@@ -156,8 +148,6 @@ services:
       - BACKUP_INTERVAL=86400
       - BACKUP_PATH=/data
       - BACKUP_FILENAME=db_backup
-    networks:
-      - backend
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache mysql-client
@@ -230,8 +220,6 @@ services:
     container_name: visiodesk
     restart: always
     user: root
-    links:
-      - master
     environment:
       - WILDFLY_PUBLIC_CONSOLE=1
       - WILDFLY_USERNAME=${WILDFLY_USERNAME}
@@ -249,6 +237,8 @@ services:
       - 9990:9990
     networks:
       - backend
+    links:
+      - master
     command: >
          bash -c "/opt/jboss/wildfly/bin/add-user.sh $$WILDFLY_USERNAME $$WILDFLY_PASSWORD --silent
          && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
@@ -271,6 +261,8 @@ services:
     restart: unless-stopped
     entrypoint: "php -S 0.0.0.0:8000"
     working_dir: /app
+    links:
+      - master
     ports:
       - 8000:8000
     networks:
