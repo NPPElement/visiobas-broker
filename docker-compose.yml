@@ -276,7 +276,7 @@ services:
       - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
       - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./conf/php-8/composer/:/root/.composer/
-      - ./conf/php-8/projects:/app
+      - ./home/php-8/projects:/app
     logging:
       driver: "json-file"
       options:
@@ -293,12 +293,53 @@ services:
       - USERNAME=admin
       - PASSWORD=admin
     volumes:
-      - ./conf/php-8/projects:/workspace
+      - ./home/php-8/projects:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
     networks:
       - backend
     ports:
       - 9998:80
+    restart: unless-stopped
+
+    php-8-1:
+    build: ./conf/php-8/build
+    container_name: php-8-1
+    image: php-8
+    restart: unless-stopped
+    entrypoint: "php -S 0.0.0.0:8000"
+    working_dir: /app
+    links:
+      - master
+    networks:
+      - backend
+    volumes:
+      - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
+      - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
+      - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./conf/php-8/composer/:/root/.composer/
+      - ./home/php-8/projects-1:/app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1024k"
+        max-file: "2"
+
+  cloud9-php-1:
+    image: kdelfour/cloud9-docker
+    container_name: cloud9-php-1
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USERNAME=admin
+      - PASSWORD=admin
+    volumes:
+      - ./home/php-8/projects-1:/workspace
+      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+    networks:
+      - backend
+    ports:
+      - 9997:80
     restart: unless-stopped
       
   # vb_gateway:
