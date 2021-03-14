@@ -306,7 +306,7 @@ services:
     container_name: php-8-1
     image: php-8
     restart: unless-stopped
-    entrypoint: "php -S 0.0.0.0:8000"
+    entrypoint: "php -S 0.0.0.0:8001"
     working_dir: /app
     links:
       - master
