@@ -69,22 +69,22 @@ services:
     networks:
       - backend
 
-  maxscale:
-    container_name: maxscale
-    image: mariadb/maxscale:2.4
-    depends_on:
-      - master
-      - slave1
-      - slave2
-    volumes:
-      - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
-    networks:
-      backend:
-        ipv4_address: 172.16.16.60
-    ports:
-      - 4006:4006  # readwrite port
-      - 4008:4008  # readonly port
-      - 8989:8989  # REST API port
+  # maxscale:
+  #   container_name: maxscale
+  #   image: mariadb/maxscale:2.4
+  #   depends_on:
+  #     - master
+  #     - slave1
+  #     - slave2
+  #   volumes:
+  #     - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.16.16.60
+  #   ports:
+  #     - 4006:4006  # readwrite port
+  #     - 4008:4008  # readonly port
+  #     - 8989:8989  # REST API port
 
   master:
     hostname: master
@@ -105,45 +105,45 @@ services:
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
     networks:  
       backend:
-        ipv4_address: 172.16.16.69
+        ipv4_address: 172.16.16.60
     ports:
-      - "4001:3306"
+      - "4006:3306"
 
-  slave1:
-    hostname: slave1
-    container_name: slave1
-    image: mariadb:10.5
-    depends_on:
-      - master
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
-    volumes:
-      - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
-      - ./data/db-slave1:/var/lib/mysql
-    command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
-    networks:
-      backend:
-        ipv4_address: 172.16.16.61
-    ports:
-      - "4002:3306"
+  # slave1:
+  #   hostname: slave1
+  #   container_name: slave1
+  #   image: mariadb:10.5
+  #   depends_on:
+  #     - master
+  #   environment:
+  #     MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
+  #   volumes:
+  #     - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
+  #     - ./data/db-slave1:/var/lib/mysql
+  #   command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.16.16.61
+  #   ports:
+  #     - "4002:3306"
 
-  slave2:
-    hostname: slave2
-    container_name: slave2
-    image: mariadb:10.5
-    depends_on:
-      - master
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
-    volumes:
-      - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
-      - ./data/db-slave2:/var/lib/mysql
-    command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
-    networks:  
-      backend:
-        ipv4_address: 172.16.16.62
-    ports:
-      - "4003:3306"
+  # slave2:
+  #   hostname: slave2
+  #   container_name: slave2
+  #   image: mariadb:10.5
+  #   depends_on:
+  #     - master
+  #   environment:
+  #     MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
+  #   volumes:
+  #     - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
+  #     - ./data/db-slave2:/var/lib/mysql
+  #   command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
+  #   networks:  
+  #     backend:
+  #       ipv4_address: 172.16.16.62
+  #   ports:
+  #     - "4003:3306"
 
   dbclient:
     hostname: dbclient
