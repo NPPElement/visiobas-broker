@@ -1,0 +1,2 @@
+*/1 *	* * *	root	/usr/bin/wget -O /dev/null http://php-8:8000/zap1.php
+*/1 *	* * *	root	/usr/bin/wget -O /dev/null http://php-8:8000/electro.php
