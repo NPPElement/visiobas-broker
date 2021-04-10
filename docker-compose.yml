@@ -227,16 +227,6 @@ services:
       - backend
     links:
       - master
-    entrypoint: |
-      sh -c 'sh -s << EOF
-      while true
-        do
-              sleep 3
-              wget -O /dev/null http://127.0.0.1/electro.php &
-              wget -O /dev/null http://127.0.0.1/zap1.php
-        done
-      EOF'
-
 
   cloud9-php:
     image: kdelfour/cloud9-docker
@@ -254,6 +244,20 @@ services:
       - backend
     ports:
       - 9000:80
+
+  client:
+    container_name: client
+    image: alpine
+    entrypoint: |
+      sh -c 'sh -s << EOF
+      apk add --no-cache wget
+      while true
+        do
+              sleep 3
+              wget -O /dev/null http://apache-php7/electro.php &
+              wget -O /dev/null http://apache-php7/zap1.php
+        done
+      EOF'
       
   # vb_gateway:
   #   container_name: getawey
