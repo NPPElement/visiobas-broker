@@ -176,13 +176,13 @@ services:
       - WILDFLY_PASSWORD=${WILDFLY_PASSWORD}
       - WILDFLY_NAME=${WILDFLY_NAME}
       - 'VISIODESK_VBAS_CONNECT_STRING=jdbc:mysql://master/vbas?useUnicode=true&connectionCollation=utf8_general_ci&characterSetResults=utf8&characterEncoding=utf8&user=root&password=admin'
-      - MQTT_BROKER_URL_WEB=ws://192.168.1.100:15675/ws
-      - MQTT_BROKER_URL_SERVER=tcp://192.168.1.100:1883
-      - MQTT_USERNAME=user
-      - MQTT_PASSWORD=user
+      - MQTT_BROKER_URL_WEB=ws://${VISIODESK_HOSTNAME}:15675/ws
+      - MQTT_BROKER_URL_SERVER=tcp://${VISIODESK_HOSTNAME}:1883
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
       - MQTT_PARSE_METHOD=light
-      - MQTT_CLIENT_ID=clientVisiodesk2298
-      #- WILDFLY_HOST=visiodesk.net
+      - MQTT_CLIENT_ID=${MQTT_CLIENT_ID}
+      - WILDFLY_HOST=${VISIODESK_HOSTNAME}
     ports:
       - 9990:9990
     networks:
