@@ -1,2 +1,9 @@
 .DS_Store
 .env
+.c9
+data/*
+home/*
+log/*
+*.deployed
+conf/nginx/conf/default.conf
+home/php-8/projects/z_state.json

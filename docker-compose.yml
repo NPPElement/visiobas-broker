@@ -182,7 +182,6 @@ services:
       - MQTT_PASSWORD=${MQTT_PASSWORD}
       - MQTT_PARSE_METHOD=light
       - MQTT_CLIENT_ID=client_${VISIODESK_HOSTNAME}
-      #- WILDFLY_HOST=${VISIODESK_HOSTNAME}
     ports:
       - 9990:9990
     networks:

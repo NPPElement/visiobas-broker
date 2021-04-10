@@ -102,7 +102,7 @@ sudo docker restart visiodesk
 echo -n 'visiodesk запускается '; (sleep 40) & spinner $!
 echo ' '
 
-docker-compose exec maxscale maxctrl list servers
+#docker-compose exec maxscale maxctrl list servers
 
 echo ' '
 echo '   Устанавливаем начальные данные'
