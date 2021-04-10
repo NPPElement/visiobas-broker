@@ -242,9 +242,10 @@ services:
       apk add --no-cache wget
       while true
         do
-          sleep 3 echo "$$(date +%FT%H.%m) - electro" wget -O /dev/null http://apache-php7/electro.php &
-          sleep 3 echo "$$(date +%FT%H.%m) - zap1"    wget -O /dev/null http://apache-php7/zap1.php &
-          sleep 2 echo "$$(date +%FT%H.%m) - push"    wget -O /dev/null http://visiodesk/vdesk/external/task/push
+          wget -O /dev/null http://apache-php7/electro.php &
+          wget -O /dev/null http://apache-php7/zap1.php &
+          wget -O /dev/null http://visiodesk/vdesk/external/task/push
+          sleep 2
         done
       EOF'
       
