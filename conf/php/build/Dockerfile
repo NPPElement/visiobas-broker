@@ -18,15 +18,13 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd
 
 # Куда же без composer'а.
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Добавим свой php.ini, можем в нем определять свои значения конфига
-ADD ../config/php.ini /usr/local/etc/php/conf.d/40-custom.ini
+# ADD ../config/php.ini /usr/local/etc/php/conf.d/40-custom.ini
 
 # Указываем рабочую директорию для PHP
 WORKDIR /var/www
 
 # Запускаем контейнер
-# Из документации: Основная цель CMD-предоставить значения по умолчанию для исполняемого контейнера. Эти значения по умолчанию могут включать исполняемый файл, 
-# или они могут опустить исполняемый файл, и в этом случае вы также должны указать инструкцию ENTRYPOINT.
 CMD ["php-fpm"]
