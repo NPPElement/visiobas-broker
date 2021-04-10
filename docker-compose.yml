@@ -232,7 +232,8 @@ services:
       while true
         do
               sleep 3
-              
+              wget -O /dev/null http://127.0.0.1/electro.php &
+              wget -O /dev/null http://127.0.0.1/zap1.php
         done
       EOF'
 

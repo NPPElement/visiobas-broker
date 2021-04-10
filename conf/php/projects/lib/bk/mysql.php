@@ -6,7 +6,8 @@ $sql_log = [];
 
 global $db_link;
 //if(!$db_link=mysqli_connect("localhost", "root", "77877", "vbas", "3307")) die("!connect");
-//if(!$db_link=mysqli_connect("visiodesk.net", "maxuser", "maxpwd", "vbas", "4006")) die("!connect");
+// if(!$db_link=mysqli_connect("visiodesk.net", "maxuser", "maxpwd", "vbas", "4006")) die("!connect");
+
 if(!$db_link=mysqli_connect("master", "root", "admin", "vbas", "3306")) die("!connect");
 global $ENUMS;
 $ENUMS = [
@@ -55,12 +56,4 @@ function getRecord($sql) {
     $r = select($sql);
 //    print_r($r);
     return count($r)>0 ? reset($r) : false;
-}
-
-
-function setValueByRef($reference, $value) {
-    global $changedRef;
-    $changedRef[]=$reference;
-    query("update objects set `value`=$value, `timestamp`=NOW() WHERE Object_Name='".$reference."'");
-// echo "update objects set `value`=$value, `timestamp`=NOW() WHERE Object_Name='".$reference."'\n";
 }
