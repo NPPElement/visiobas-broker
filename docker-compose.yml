@@ -66,23 +66,6 @@ services:
     networks:
       - backend
 
-  # maxscale:
-  #   container_name: maxscale
-  #   image: mariadb/maxscale:2.4
-  #   depends_on:
-  #     - master
-  #     - slave1
-  #     - slave2
-  #   volumes:
-  #     - ./conf/mxs/maxscale.cnf.d:/etc/maxscale.cnf.d
-  #   networks:
-  #     backend:
-  #       ipv4_address: 172.16.16.60
-  #   ports:
-  #     - 4006:4006  # readwrite port
-  #     - 4008:4008  # readonly port
-  #     - 8989:8989  # REST API port
-
   master:
     hostname: master
     container_name: master
@@ -102,42 +85,6 @@ services:
       - ./conf/mxs/sql/master:/docker-entrypoint-initdb.d
       - ./data/db-master:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
-
-  # slave1:
-  #   hostname: slave1
-  #   container_name: slave1
-  #   image: mariadb:10.5
-  #   depends_on:
-  #     - master
-  #   environment:
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
-  #   volumes:
-  #     - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
-  #     - ./data/db-slave1:/var/lib/mysql
-  #   command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3001 --log-slave-updates
-  #   networks:
-  #     backend:
-  #       ipv4_address: 172.16.16.61
-  #   ports:
-  #     - "4002:3306"
-
-  # slave2:
-  #   hostname: slave2
-  #   container_name: slave2
-  #   image: mariadb:10.5
-  #   depends_on:
-  #     - master
-  #   environment:
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: 'Y'
-  #   volumes:
-  #     - ./conf/mxs/sql/slave:/docker-entrypoint-initdb.d
-  #     - ./data/db-slave2:/var/lib/mysql
-  #   command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3002 --log-slave-updates
-  #   networks:  
-  #     backend:
-  #       ipv4_address: 172.16.16.62
-  #   ports:
-  #     - "4003:3306"
 
   dbclient:
     hostname: dbclient
@@ -200,7 +147,6 @@ services:
   #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
   #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
-
   cloud9:
     image: kdelfour/cloud9-docker
     container_name: cloud9
@@ -246,7 +192,6 @@ services:
     command: >
          bash -c "/opt/jboss/wildfly/bin/add-user.sh $$WILDFLY_USERNAME $$WILDFLY_PASSWORD --silent
          && /opt/jboss/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement 0.0.0.0 --debug"
-    #entrypoint: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0 -Djboss.server.default.config=standalone-full-ha.xml -Djboss.node.name=wildfly2 -Djava.net.preferIPv4Stack=true -Djgroups.bind_addr=wildfly2 -Djboss.messaging.cluster.password=admin
     volumes:
       - ./conf/visiodesk/deployments:/opt/jboss/wildfly/standalone/deployments
       - ./conf/visiodesk/services:/opt/services
@@ -256,32 +201,27 @@ services:
       - ./log/visiodesk:/opt/jboss/wildfly/standalone/log/:rw
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
-      #- ./home/configuration:/opt/jboss/wildfly/standalone/configuration:rw
 
-  php-8:
-    build: ./conf/php-8/build
-    container_name: php-8
-    image: php-8
-    restart: unless-stopped
-    entrypoint: "php -S 0.0.0.0:8000"
-    working_dir: /app
+  php:
+    # у нас свой образ для PHP, указываем путь к нему и говорим что его надо собрать
+    build: ./conf/php/build
+    container_name: php
     links:
       - master
+    # монтируем директорию с проекта
+    volumes:
+      - ./conf/php/projects:/var/www
+      - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
+    entrypoint: "php -S 0.0.0.0:8000"
     ports:
       - 8000:8000
     networks:
       - backend
-    volumes:
-      - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
-      - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
-      - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-      - ./conf/php-8/composer/:/root/.composer/
-      - ./home/php-8/projects:/app
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1024k"
-        max-file: "2"
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "1024k"
+    #     max-file: "2"
 
   cloud9-php:
     image: kdelfour/cloud9-docker
@@ -293,56 +233,12 @@ services:
       - USERNAME=admin
       - PASSWORD=admin
     volumes:
-      - ./home/php-8/projects:/workspace
+      - ./conf/php/projects:/workspace
       - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
     networks:
       - backend
     ports:
-      - 9998:80
-    restart: unless-stopped
-
-  php-8-1:
-    build: ./conf/php-8/build
-    container_name: php-8-1
-    image: php-8
-    restart: unless-stopped
-    entrypoint: "php -S 0.0.0.0:8001"
-    working_dir: /app
-    ports:
-      - 8001:8001
-    links:
-      - master
-    networks:
-      - backend
-    volumes:
-      - ./conf/php-8/config/msmtprc:/etc/msmtprc:ro
-      - ./conf/php-8/config/php.ini:/usr/local/etc/php/conf.d/my.ini:ro
-      - ./conf/php-8/config/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-      - ./conf/php-8/composer/:/root/.composer/
-      - ./home/php-8/projects-1:/app
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1024k"
-        max-file: "2"
-
-  cloud9-php-1:
-    image: kdelfour/cloud9-docker
-    container_name: cloud9-php-1
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - USERNAME=admin
-      - PASSWORD=admin
-    volumes:
-      - ./home/php-8/projects-1:/workspace
-      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
-    networks:
-      - backend
-    ports:
-      - 9997:80
-    restart: unless-stopped
+      - 9000:80
       
   # vb_gateway:
   #   container_name: getawey
