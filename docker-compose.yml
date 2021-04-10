@@ -227,6 +227,15 @@ services:
       - backend
     links:
       - master
+    entrypoint: |
+      sh -c 'sh -s << EOF
+      while true
+        do
+              sleep 3
+              
+        done
+      EOF'
+
 
   cloud9-php:
     image: kdelfour/cloud9-docker
