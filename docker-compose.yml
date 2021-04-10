@@ -206,8 +206,6 @@ services:
     # у нас свой образ для PHP, указываем путь к нему и говорим что его надо собрать
     build: ./conf/php/build
     container_name: php
-    links:
-      - master
     # монтируем директорию с проекта
     volumes:
       - ./conf/php/projects:/var/www
@@ -217,6 +215,8 @@ services:
       - 8000:8000
     networks:
       - backend
+    links:
+      - master
     # logging:
     #   driver: "json-file"
     #   options:
