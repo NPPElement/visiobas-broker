@@ -244,7 +244,7 @@ services:
         do
           wget -O /dev/null http://apache-php7/electro.php &
           wget -O /dev/null http://apache-php7/zap1.php &
-          wget -O /dev/null http://visiodesk/vdesk/external/task/push
+          wget -O /dev/null http://visiodesk/vdesk/external/task/push &
           sleep 2
         done
       EOF'
