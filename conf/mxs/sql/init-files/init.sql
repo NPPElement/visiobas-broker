@@ -768,6 +768,7 @@ CREATE TABLE IF NOT EXISTS `objects` (
   `parent_id` int(11) NOT NULL COMMENT 'id родительского объекта',
   `device_id` int(11) DEFAULT NULL COMMENT 'id объекта device, к которому привязан объект',
   `reliability_id` int(11) NOT NULL DEFAULT '0',
+  `map_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'id объекта Map: на карте',
   `out_of_service` tinyint(1) NOT NULL DEFAULT '0',
   `bacnet_name` varchar(256) DEFAULT NULL COMMENT 'имя объекта получаемое от bacnet устройства',
   `value` double DEFAULT '0',
@@ -4165,11 +4166,49 @@ SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_US
 DELIMITER //
 CREATE TRIGGER `trigger_topic_item_after_insert` AFTER INSERT ON `topic_item` FOR EACH ROW BEGIN
 
+	DECLARE currentRemovedAt 	DATETIME;
+
 -- Устанавливаем последний итем
  	UPDATE user_topic_subscribe SET last_id = NEW.id WHERE topic_id=NEW.topic_id;
 
 -- Устанавливаем последний итем статуса
  	IF NEW.type_id=6 THEN
+
+		CALL vbas.func_debug(CONCAT("trigger_topic_item_after_insert(", NEW.id,", topic: ", NEW.topic_id, ", status: ", NEW.status_id, ", time: ", NEW.hold_millis ,")"));
+ 		CASE NEW.status_id
+ 		-- HOLD ON + other
+-- , terminated_to = FROM_UNIXTIME( NEW.hold_millis/1000 )
+ 			WHEN 1 THEN
+
+ 				CALL vbas.func_debug(CONCAT("SET 1: ", FROM_UNIXTIME( NEW.hold_millis/1000 )));
+	 			UPDATE topic SET status_id = NEW.status_id, closed=0, removed_at=NULL, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 3 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, closed=0, removed_at=NULL, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 4 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, closed=0, removed_at=NULL, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+ 			WHEN 5 THEN
+	 			UPDATE topic SET status_id = NEW.status_id, closed=0, removed_at=NULL, hold_to= FROM_UNIXTIME( NEW.hold_millis/1000 ) WHERE id=NEW.topic_id;
+
+	 	-- CLOSE
+ 			WHEN 6 THEN
+				UPDATE topic SET status_id = NEW.status_id, topic.removed_at=NOW() , topic.closed=1  WHERE id=NEW.topic_id;
+
+ 			ELSE
+				SELECT removed_at FROM topic WHERE id=NEW.topic_id INTO currentRemovedAt;
+-- 				CALL vbas.func_debug(CONCAT("removed_at(",NEW.topic_id,") = ", currentRemovedAt));
+ 				IF currentRemovedAt IS NOT NULL  THEN
+-- 					CALL vbas.func_debug(CONCAT("SET NULL  removed_at (",NEW.topic_id,")"));
+
+					UPDATE topic SET status_id = NEW.status_id, removed_at=NULL, closed=0 WHERE id=NEW.topic_id;
+				ELSE
+					UPDATE topic SET status_id = NEW.status_id WHERE id=NEW.topic_id;
+ 				END IF;
+		END CASE;
+
+
  	 	UPDATE user_topic_subscribe SET last_status_item_id = NEW.id WHERE topic_id=NEW.topic_id;
 
  	-- Если закрывается заявка, обнулить нужно активные откртые топики в таблице слежения за объектами
@@ -4180,17 +4219,40 @@ CREATE TRIGGER `trigger_topic_item_after_insert` AFTER INSERT ON `topic_item` FO
 
  	END IF;
 
+
+
+ 	IF NEW.type_id=5 THEN
+		UPDATE topic SET priority_id = NEW.priority_id WHERE id=NEW.topic_id;
+ 	END IF;
+
+-- term_date_plan
+ 	IF NEW.type_id=8 THEN
+		UPDATE topic SET topic.terminated_to = FROM_UNIXTIME(NEW.text/1000) WHERE id=NEW.topic_id;
+ 	END IF;
+
+
 -- Устанавливаем последний прочитанный пользтвателем итем
  	IF NEW.type_id=14 THEN
  	 	UPDATE user_topic_subscribe SET checked_id = NEW.id WHERE topic_id=NEW.topic_id AND user_id=NEW.author_id;
  	END IF;
 
---  Установка checked
+ 	IF NEW.type_id=17 THEN
+		UPDATE topic SET topic.description = NEW.text WHERE id=NEW.topic_id;
+	END IF;
+
+
+--  Установка changed
  	UPDATE user_topic_subscribe SET
 	 	changed=if((closed=0 AND on_hold=0 AND checked_id<last_id AND (is_author=1 OR is_inwork=1 OR is_binded=1 OR (is_group=1 AND (support_date IS NOT NULL) AND support_date<NOW()))),1,0)
 		 WHERE topic_id=NEW.topic_id;
 
-    UPDATE `vdesk`.`topic` SET last_item_id=NEW.id WHERE id=NEW.topic_id AND last_item_id < NEW.id;
+ 	IF NEW.type_id<>14 THEN
+ 	 	UPDATE `vdesk`.`topic` SET last_item_id=NEW.id WHERE id=NEW.topic_id AND last_item_id < NEW.id;
+ 	END IF;
+
+--	UPDATE `vdesk`.`topic` SET last_item_id=NEW.id WHERE id=NEW.topic_id AND last_item_id < NEW.id;
+ 	UPDATE user_topic_subscribe SET changed=0, checked_id=NEW.id where topic_id=NEW.topic_id AND user_id=NEW.author_id;
+
 
 END//
 DELIMITER ;

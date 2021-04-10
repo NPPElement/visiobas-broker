@@ -235,7 +235,7 @@ services:
       - MQTT_USERNAME=user
       - MQTT_PASSWORD=user
       - MQTT_PARSE_METHOD=light
-      - MQTT_CLIENT_ID=clientVisiodesk222
+      - MQTT_CLIENT_ID=clientVisiodesk2298
       #- WILDFLY_HOST=visiodesk.net
     ports:
       - 9990:9990
