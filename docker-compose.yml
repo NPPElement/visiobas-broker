@@ -218,6 +218,7 @@ services:
   apache-php7:
     image: nimmis/apache-php7
     container_name: apache-php7
+    hostname: apache-php7
     volumes:
       - ./conf/php/projects:/var/www/html
       - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
@@ -248,6 +249,8 @@ services:
   client:
     container_name: client
     image: alpine
+    networks:
+      - backend
     entrypoint: |
       sh -c 'sh -s << EOF
       apk add --no-cache wget
