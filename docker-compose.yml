@@ -201,15 +201,28 @@ services:
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
 
-  php:
-    build: ./conf/php/build
-    container_name: php
+  # php:
+  #   build: ./conf/php/build
+  #   container_name: php
+  #   volumes:
+  #     - ./conf/php/projects:/var/www
+  #     - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
+  #   entrypoint: "php -S 0.0.0.0:8000"
+  #   ports:
+  #     - 8000:8000
+  #   networks:
+  #     - backend
+  #   links:
+  #     - master
+
+  apache-php7:
+    image: nimmis/apache-php7
+    container_name: apache-php7
     volumes:
-      - ./conf/php/projects:/var/www
+      - ./conf/php/projects:/var/www/html
       - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
-    entrypoint: "php -S 0.0.0.0:8000"
     ports:
-      - 8000:8000
+      - 8000:8080
     networks:
       - backend
     links:
