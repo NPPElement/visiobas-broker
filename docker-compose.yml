@@ -222,7 +222,7 @@ services:
       - ./conf/php/projects:/var/www/html
       - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
     ports:
-      - 8000:8080
+      - 8000:80
     networks:
       - backend
     links:
