@@ -232,21 +232,23 @@ services:
     ports:
       - 9000:80
 
-  client:
-    container_name: client
-    image: alpine
-    networks:
-      - backend
-    entrypoint: |
-      sh -c 'sh -s << EOF
-      apk add --no-cache wget
-      while true
-        do
-          sleep 60 && wget -O /dev/null http://apache-php7/electro.php &
-          sleep 60 && wget -O /dev/null http://apache-php7/zap1.php &
-          sleep 2 && wget -O /dev/null http://visiodesk/vdesk/external/task/push &
-        done
-      EOF'
+#  client:
+#    container_name: client
+#    image: alpine
+#    networks:
+#      - backend
+#    entrypoint: |
+#      sh -c 'sh -s << EOF
+#      apk add --no-cache wget
+#      EOF'
+#          sleep 2 && wget -O /dev/null http://visiodesk/vdesk/external/task/push &
+#          sleep 60 && wget -O /dev/null http://apache-php7/electro.php &
+#          sleep 60 && wget -O /dev/null http://apache-php7/zap1.php &
+#      while true
+#        do
+#	    sleep 60
+#        done
+
       
   # vb_gateway:
   #   container_name: getawey
