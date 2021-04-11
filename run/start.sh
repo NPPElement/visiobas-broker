@@ -30,7 +30,7 @@ sudo docker restart visiodesk
 echo -n 'visiodesk перезапускается '; (sleep 40) & spinner $!
 echo ' '
 
-docker-compose exec maxscale maxctrl list servers
+#docker-compose exec maxscale maxctrl list servers
 
 # Visiodesk запущен
 echo ' '
