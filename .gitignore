@@ -7,4 +7,3 @@ log/*
 *.deployed
 conf/nginx/conf/default.conf
 home/php-8/projects/z_state.json
-!home/createtiles/createtiles.sh
