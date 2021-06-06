@@ -155,6 +155,18 @@ DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 -- Дамп структуры базы данных vbas
 DROP DATABASE IF EXISTS `vbas`;
 CREATE DATABASE IF NOT EXISTS `vbas` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
@@ -3065,6 +3077,7 @@ SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_US
 DELIMITER //
 CREATE TRIGGER `trigger_object_change` AFTER UPDATE ON `objects` FOR EACH ROW BEGIN
 
+
 	DECLARE notificationId INT;
 	DECLARE topicId INT;
 	DECLARE topicFaultId INT;
@@ -3133,11 +3146,11 @@ CREATE TRIGGER `trigger_object_change` AFTER UPDATE ON `objects` FOR EACH ROW BE
 					END IF;
 
 					IF topicFaultId>0 AND NEW.status&2!=0 AND OLD.status&2=0 THEN
-						CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageFault, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicFaultId, 13, userId, NULL);
+						CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageFault, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicFaultId, 13, userId, NULL, NULL);
 					END IF;
 
 					IF topicFaultId>0 AND NEW.status&2=0 AND OLD.status&2!=0 THEN
-						CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicFaultId, 13, userId, NULL);
+						CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicFaultId, 13, userId, NULL, NULL);
 					END IF;
 				END IF;
 
@@ -3153,12 +3166,12 @@ CREATE TRIGGER `trigger_object_change` AFTER UPDATE ON `objects` FOR EACH ROW BE
 
 					-- Восстановление, топик создан
 					IF enableToNormal AND topicId>0 AND NEW.value!=binaryAlarmValue AND NEW.value!=OLD.value THEN
-							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL);
+							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL, NULL);
 					END IF;
 
 					-- Выход за границы, топик создан
 					IF enableToOffnormal AND topicId>0 AND NEW.value=binaryAlarmValue AND NEW.value!=OLD.value THEN
-							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageOffnormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL);
+							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageOffnormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL, NULL);
 					END IF;
 
 				END IF; -- Binary
@@ -3185,12 +3198,12 @@ CREATE TRIGGER `trigger_object_change` AFTER UPDATE ON `objects` FOR EACH ROW BE
 
 					-- Восстановление, топик создан
 					IF enableToNormal AND topicId>0 AND newAnalogBondary AND NOT oldAnalogBondary THEN
-							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL);
+							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageNormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL, NULL);
 					END IF;
 
 					-- Выход за границы, топик создан
 					IF enableToOffnormal AND topicId>0 AND NOT newAnalogBondary AND oldAnalogBondary THEN
-							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageOffnormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL);
+							CALL `vdesk`.func_add_topic_item('Сообщение', CONCAT('[p]',func_replace_NameValueTime(messageOffnormal, new.Object_Name,NEW.value, NEW.timestamp),'[/p]'), topicId, 13, userId, NULL, NULL);
 					END IF;
 				END IF;
 
@@ -3446,20 +3459,26 @@ CREATE TABLE IF NOT EXISTS `check` (
 -- Дамп структуры для таблица vdesk.check_list
 DROP TABLE IF EXISTS `check_list`;
 CREATE TABLE IF NOT EXISTS `check_list` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
-  `unique_number` int(11) DEFAULT NULL,
-  `name` varchar(128) DEFAULT NULL,
-  `description` varchar(1024) DEFAULT NULL,
-  `object` varchar(1024) DEFAULT NULL,
-  `check_date` datetime DEFAULT NULL,
-  `check_period` int(11) DEFAULT NULL,
-  `check_status` int(11) DEFAULT NULL,
-  `check_percent` int(11) DEFAULT NULL,
-  `group_id` int(11) DEFAULT NULL,
-  `client_id` int(11) DEFAULT NULL,
-  `type` varchar(128) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`root_id` INT(11) NULL DEFAULT NULL,
+	`parent_id` INT(11) NULL DEFAULT NULL,
+	`unique_number` INT(11) NULL DEFAULT NULL,
+	`name` VARCHAR(128) NULL DEFAULT NULL,
+	`description` VARCHAR(1024) NULL DEFAULT NULL,
+	`object` VARCHAR(1024) NULL DEFAULT NULL,
+	`check_date` DATETIME NULL DEFAULT NULL,
+	`check_period` INT(11) NULL DEFAULT NULL,
+	`check_status` INT(11) NULL DEFAULT NULL,
+	`check_percent` INT(11) NULL DEFAULT NULL,
+	`group_id` INT(11) NULL DEFAULT NULL,
+	`client_id` INT(11) NULL DEFAULT NULL,
+	`type` VARCHAR(128) NULL DEFAULT NULL,
+	`user_id` INT(11) NULL DEFAULT NULL,
+	`count_closed` INT(11) NOT NULL DEFAULT '0',
+	`count_resolved` INT(11) NOT NULL DEFAULT '0',
+	`count_on_hold` INT(11) NOT NULL DEFAULT '0',
+	`count_in_progress` INT(11) NOT NULL DEFAULT '0',
+	`count_created` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_clist_client_idx` (`client_id`),
@@ -3551,7 +3570,8 @@ CREATE PROCEDURE `func_add_topic_item`(
 		IN `topic_id` INT,
 		IN `type_id` INT,
 		IN `user_id` INT,
-		IN `status_id` INT)
+		IN `status_id` INT,
+		IN `priority_id` INT)
     COMMENT 'Добавление записи в таблицу topic_item'
 BEGIN
 	INSERT INTO `topic_item` (
@@ -3560,6 +3580,7 @@ BEGIN
 		`topic_id`,
 		`author_id`,
 		`status_id`,
+		`priority_id`,
 		`name`,
 		`text`
 	) VALUES (
@@ -3568,11 +3589,13 @@ BEGIN
 		topic_id,
 		user_id,
 		status_id,
+		priority_id,
 		itemName,
 		itemText
 	);
 END//
 DELIMITER ;
+
 
 
 -- Дамп структуры для функция vdesk.func_create_topic

@@ -1,4 +1,5 @@
-# Docker-compose
+# docker-compose
+
 version: '3.7'
 
 networks:
@@ -13,6 +14,8 @@ networks:
           ip_range: 172.16.0.0/24
 
 services:
+
+# services for visiodesk 3.0 and visiodesk 4.0
 
   portainer:
     image:  portainer/portainer-ce
@@ -36,7 +39,7 @@ services:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-      RABBITMQ_DEFAULT_VHOST: "/manager/rabbit/"
+      RABBITMQ_DEFAULT_VHOST: "/"
     ports:
       - 15675:15675
       - 1883:1883
@@ -50,11 +53,13 @@ services:
       - ./log/rabbit:/var/log/rabbitmq
 
   nginx:
-    image: jwilder/nginx-proxy:latest
+    image: nginx:alpine
     container_name: proxy
     volumes:
-      - ./conf/nginx/www:/usr/share/nginx/html
+      - ./home/visiodesk:/usr/share/nginx/html:ro
       - ./conf/nginx/conf:/etc/nginx/conf.d
+      - ./conf/nginx/ssl/rootCA.crt:/etc/nginx/ssl/rootCA.crt:ro
+      - ./conf/nginx/ssl/rootCA.key:/etc/nginx/ssl/rootCA.key:ro
       - ./data/nginx/dhparam:/etc/nginx/dhparam
       - ./data/nginx/vhost:/etc/nginx/vhost.d
       - ./data/nginx/certs:/etc/nginx/certs
@@ -65,6 +70,39 @@ services:
       - "443:443"
     networks:
       - backend
+
+# services only for visiodesk 4.0
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    hostname: ${POSTGRES_HOSTNAME}
+    ports:
+      - 5044:5432
+    # entrypoint:
+    #   - /entrypoint.sh
+    networks:
+      - backend
+    volumes:
+      - ./postgres/database:/var/lib/postgresql/data
+      # - ./postgres/data.sql:/data.sql
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: "admin@visiodesk.net"
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8080:80"
+    links: 
+      - postgres 
+
+# services only for visiodesk 3.0
 
   master:
     hostname: master
@@ -86,37 +124,6 @@ services:
       - ./data/db-master:/var/lib/mysql
     command: mysqld --log-bin=mariadb-bin --binlog-format=ROW --server-id=3000 --log-slave-updates
 
-  dbclient:
-    hostname: dbclient
-    container_name: dbclient
-    image: alpine
-    depends_on:
-      - master
-    networks:
-      - backend
-    environment:
-      - BACKUP_ENABLED=1
-      - BACKUP_INTERVAL=86400
-      - BACKUP_PATH=/data
-      - BACKUP_FILENAME=db_backup
-    entrypoint: |
-      sh -c 'sh -s << EOF
-      apk add --no-cache mysql-client
-      while true
-        do
-          if [ $$BACKUP_ENABLED == 1 ]
-            then
-              sleep $$BACKUP_INTERVAL
-              mkdir -p $$BACKUP_PATH/$$(date +%F)
-              echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
-              mysqldump -umaxuser -pmaxpwd -h master -P 4008 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
-              find $$BACKUP_PATH -mtime 7 -delete
-          fi
-        done
-      EOF'
-    volumes:
-      - ./home/db-backup:/data
-
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin
@@ -127,42 +134,6 @@ services:
       - backend
     volumes:
      - /sessions
-
-  # webdav:
-  #   image: jboss/wildfly
-  #   hostname: webdav
-  #   container_name: webdav
-  #   restart: always
-  #   user: root
-  #   environment:
-  #     - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
-  #     - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
-  #   networks:
-  #     backend:
-  #       ipv4_address: 172.16.16.40
-  #   command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
-  #   volumes: 
-  #     - ./home/visiodesk/svg:/opt/webdav/webdav-files
-  #     - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
-  #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
-  #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
-
-  cloud9:
-    image: kdelfour/cloud9-docker
-    container_name: cloud9
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - USERNAME=admin #optional
-      - PASSWORD=admin #optional
-    volumes:
-      - ./home/visiodesk/svg:/workspace
-      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
-      #- /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 9999:80
-    restart: unless-stopped
 
   visiodesk:
     image: jboss/wildfly:21.0.2.Final
@@ -201,85 +172,119 @@ services:
       - ./conf/visiodesk/configuration/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
       - ./conf/visiodesk/configuration/ssl.sh:/opt/jboss/wildfly/standalone/configuration/ssl.sh
 
-  apache-php7:
-    image: nimmis/apache-php7
-    container_name: apache-php7
-    hostname: apache-php7
-    volumes:
-      - ./conf/php/projects:/var/www/html
-      - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
-    ports:
-      - 8000:80
-    networks:
-      - backend
-    links:
-      - master
+# other services
 
-  cloud9-php:
-    image: kdelfour/cloud9-docker
-    container_name: cloud9-php
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - USERNAME=admin
-      - PASSWORD=admin
-    volumes:
-      - ./conf/php/projects:/workspace
-      - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
-    networks:
-      - backend
-    ports:
-      - 9000:80
-
-#  client:
-#    container_name: client
-#    image: alpine
-#    networks:
-#      - backend
-#    entrypoint: |
-#      sh -c 'sh -s << EOF
-#      apk add --no-cache wget
-#      EOF'
-#          sleep 2 && wget -O /dev/null http://visiodesk/vdesk/external/task/push &
-#          sleep 60 && wget -O /dev/null http://apache-php7/electro.php &
-#          sleep 60 && wget -O /dev/null http://apache-php7/zap1.php &
-#      while true
-#        do
-#	    sleep 60
-#        done
-
-      
-  # vb_gateway:
-  #   container_name: getawey
-  #   build: ./home/gateway/
-  #   image: visiobas-gateway:0.1.2
-  #   #    logging:
-  #   #     driver: none
-  #   #      driver: "json-file"
-  #   #      options:
-  #   #        max-file: 3
-  #   #        max-size: 50m
+  # webdav:
+  #   image: jboss/wildfly
+  #   hostname: webdav
+  #   container_name: webdav
   #   restart: always
   #   user: root
   #   environment:
-  #     - TZ=Europe/Moscow
-  #     - PYTHONPATH=/
-  #     # Logging
-  #     - LOG_LEVEL=INFO
-  #     - FILE_LOG_LEVEL=INFO
+  #     - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
+  #     - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.16.16.40
+  #   command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
+  #   volumes: 
+  #     - ./home/visiodesk/svg:/opt/webdav/webdav-files
+  #     - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
+  #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
+  #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
+
+  # dbclient:
+  #   hostname: dbclient
+  #   container_name: dbclient
+  #   image: alpine
+  #   depends_on:
+  #     - master
+  #   networks:
+  #     - backend
+  #   environment:
+  #     - BACKUP_ENABLED=1
+  #     - BACKUP_INTERVAL=86400
+  #     - BACKUP_PATH=/data
+  #     - BACKUP_FILENAME=db_backup
+  #   entrypoint: |
+  #     sh -c 'sh -s << EOF
+  #     apk add --no-cache mysql-client
+  #     while true
+  #       do
+  #         if [ $$BACKUP_ENABLED == 1 ]
+  #           then
+  #             sleep $$BACKUP_INTERVAL
+  #             mkdir -p $$BACKUP_PATH/$$(date +%F)
+  #             echo "$$(date +%FT%H.%m) - Making Backup to : $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz"
+  #             mysqldump -umaxuser -pmaxpwd -h master -P 4008 --all-databases | gzip > $$BACKUP_PATH/$$(date +%F)/$$BACKUP_FILENAME-$$(date +%FT%H.%m).sql.gz
+  #             find $$BACKUP_PATH -mtime 7 -delete
+  #         fi
+  #       done
+  #     EOF'
   #   volumes:
-  #     - ./log/gateway:/visiobas-gateway/logs/:rw
-  #     - ./conf/gateway/config:/visiobas-gateway/gateway/config
-  #     - ./conf/gateway/bacnet/address_cache:/visiobas-gateway/connectors/bacnet/address_cache
-  #     - ./conf/gateway/modbus/address_cache:/visiobas-gateway/connectors/modbus/address_cache
-  #   command: python -OO __main__.py
+  #     - ./home/db-backup:/data
+
+  # apache-php7:
+  #   image: nimmis/apache-php7
+  #   container_name: apache-php7
+  #   hostname: apache-php7
+  #   volumes:
+  #     - ./conf/php/projects:/var/www/html
+  #     - ./conf/php/config/php.ini:/usr/local/etc/php/conf.d/40-custom.ini:ro
+  #   ports:
+  #     - 8000:80
+  #   networks:
+  #     - backend
+  #   links:
+  #     - master
+
+  # cloud9:
+  #   image: kdelfour/cloud9-docker
+  #   container_name: cloud9
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/London
+  #     - USERNAME=admin #optional
+  #     - PASSWORD=admin #optional
+  #   volumes:
+  #     - ./home/visiodesk/svg:/workspace
+  #     - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
+  #     #- /var/run/docker.sock:/var/run/docker.sock
+  #   ports:
+  #     - 9999:80
+  #   restart: unless-stopped
+
+  # cloud9-php:
+  #   image: kdelfour/cloud9-docker
+  #   container_name: cloud9-php
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/London
+  #     - USERNAME=admin
+  #     - PASSWORD=admin
+  #   volumes:
+  #     - ./conf/php/projects:/workspace
+  #     - ./conf/cloud9/c9-logo-blue@2x.png:/cloud9/plugins/c9.ide.layout.classic/images/c9-logo-blue@2x.png
   #   networks:
   #     - backend
   #   ports:
-  #     - 502:502
-  #     #- 1883:1883
-  #     - 7070:7070
-  #     - 8088:8080
-  #     #- 8883:8883
-  #     - 47808:47808
+  #     - 9000:80
+
+  # client:
+  #   container_name: client
+  #   image: alpine
+  #   networks:
+  #     - backend
+  #   entrypoint: |
+  #     sh -c 'sh -s << EOF
+  #     apk add --no-cache wget
+  #     EOF'
+  #        sleep 2 && wget -O /dev/null http://visiodesk/vdesk/external/task/push &
+  #        sleep 60 && wget -O /dev/null http://apache-php7/electro.php &
+  #        sleep 60 && wget -O /dev/null http://apache-php7/zap1.php &
+  #     while true
+  #      do
+  #     sleep 60
+  #      done
