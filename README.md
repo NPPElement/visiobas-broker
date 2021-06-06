@@ -27,10 +27,26 @@ sudo chmod 755 /opt/services
 ```
 sudo nano /opt/services/template-env
 ```
+Задать автоматическую генерацию паролей можно и через следующий скрипт с указанием IP машины:
+```
+sudo bash /opt/services/create-rand-pas-env.sh 192.168.122.55
+``` 
 Перейдите в папку сервисов и запустите скрипт установки
 ```
 cd /opt/services/run
 sudo sh install.sh
+```
+После установки сервиса требуется добавить в RabbitMQ пользователя user с указанием пароля:
+```
+sudo docker exec -it rabbit1 sh -c 'rabbitmqctl add_user user user_password'
+sudo docker exec -it rabbit1 sh -c 'rabbitmqctl add_vhost '/'
+sudo docker exec -it rabbit1 sh -c 'rabbitmqctl set_permissions -p '/' user ".*" ".*" ".*"'
+```
+
+Если производилась правка template-env, то требуется также произвести правки в следующих файлах:
+```
+sudo nano home/visiodesk/js/js.settings.js
+sudo nano conf/visiodesk/configuration/standalone.xml
 ```
 
 Система установлена!
@@ -53,7 +69,7 @@ webdav - Файловый менеджер для загрузки файлов 
 
 в адресе вместо visiodesk.net подставьте свой домен или локальный ip адрес
 ```
-http://visiodesk.net/manager/webdav/
+http://visiodesk.net/webdav/
 ```
 
 ## WEB Portainer
@@ -64,7 +80,7 @@ Portainer — мощное решение для работы и конфигу�
 
 в адресе вместо visiodesk.net подставьте свой домен или локальный ip адрес
 ```
-http://visiodesk.net/manager/portainer/
+http://visiodesk.net/portainer/
 ```
 
 ## WEB RabbitMQ
@@ -75,7 +91,7 @@ RabbitMQ - один из самых популярных брокеров соо
 
 в адресе вместо visiodesk.net подставьте свой домен или локальный ip адрес
 ```
-http://visiodesk.net/manager/rabbit/
+http://visiodesk.net/rabbit/
 ```
 
 ## WEB phpmyadmin
@@ -86,7 +102,7 @@ phpMyAdmin - это бесплатный программный инструме
 
 в адресе вместо visiodesk.net подставьте свой домен или локальный ip адрес
 ```
-http://visiodesk.net/manager/phpmyadmin/
+http://visiodesk.net/phpmyadmin/
 ```
 
 ## MaxScale
