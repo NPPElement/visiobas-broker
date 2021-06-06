@@ -68,6 +68,7 @@ cd /opt/services/home/visiodesk
 git clone https://github.com/NPPElement/svg-example.git svg
 
 cp -r /opt/services/conf/map /opt/services/home/visiodesk/map
+cp -r /opt/services/conf/createtiles /opt/services/home/createtiles
 
 # Установка шлюза visiobas в директорию /opt/services/conf/gateway/
 cd /opt
