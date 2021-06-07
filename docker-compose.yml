@@ -13,7 +13,6 @@ networks:
           gateway: 172.16.16.1
           ip_range: 172.16.0.0/24
           
-
 services:
 
 # services for visiodesk 3.0 and visiodesk 4.0
@@ -58,7 +57,7 @@ services:
     #image: jwilder/nginx-proxy:latest
     container_name: proxy
     volumes:
-      #- ./home/visiodesk:/usr/share/nginx/html:ro
+      - ./home/visiodesk:/usr/share/nginx/html:ro
       - ./conf/nginx/conf:/etc/nginx/conf.d
       - ./conf/nginx/ssl/rootCA.crt:/etc/nginx/ssl/rootCA.crt:ro
       - ./conf/nginx/ssl/rootCA.key:/etc/nginx/ssl/rootCA.key:ro
