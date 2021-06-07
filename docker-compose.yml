@@ -54,8 +54,8 @@ services:
       - ./log/rabbit:/var/log/rabbitmq
 
   nginx:
-    #image: nginx:alpine
-    image: jwilder/nginx-proxy:latest
+    image: nginx:alpine
+    #image: jwilder/nginx-proxy:latest
     container_name: proxy
     volumes:
       #- ./home/visiodesk:/usr/share/nginx/html:ro
