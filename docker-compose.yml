@@ -98,8 +98,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: "admin@visiodesk.net"
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_LISTEN_PORT: 80
-    ports:
-      - "8080:80"
+    networks:
+      - backend
     links: 
       - postgres 
 
@@ -156,7 +156,6 @@ services:
       - MQTT_CLIENT_ID=client_${VISIODESK_HOSTNAME}
     ports:
       - 9990:9990
-      - 9090:8080
     networks:
       - backend
     links:
