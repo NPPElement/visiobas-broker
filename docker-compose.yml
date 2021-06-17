@@ -179,7 +179,7 @@ services:
   vb_gateway:
     container_name: gateway
     build:
-      context: /opt/visiobas-gateway/gateway
+      context: /opt/visiobas-gateway
       dockerfile: Dockerfile
     image: visiobas-gateway:3.2.2
     logging:
