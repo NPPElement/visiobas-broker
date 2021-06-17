@@ -191,8 +191,8 @@ services:
     restart: always
     privileged: true # [1]
     env_file:
-      - /opt/visiobas-gateway/config/gateway.env
-      - /opt/visiobas-gateway/config/http.env
+      - /opt/visiobas-gateway/gateway/config/gateway.env
+      - /opt/visiobas-gateway/gateway/config/http.env
     environment:
       - TZ=Europe/Moscow
       - PYTHONPATH=/
