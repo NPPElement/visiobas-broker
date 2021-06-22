@@ -156,6 +156,7 @@ services:
       - MQTT_CLIENT_ID=client_${VISIODESK_HOSTNAME}
     ports:
       - 9990:9990
+      - 9090:9090
     networks:
       - backend
     links:
