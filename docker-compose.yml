@@ -157,6 +157,7 @@ services:
     ports:
       - 9990:9990
       - 9090:8080
+      - 8080:8080
     networks:
       - backend
     links:
