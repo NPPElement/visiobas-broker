@@ -223,24 +223,23 @@ services:
 
 # other services
 
-  # webdav:
-  #   image: jboss/wildfly
-  #   hostname: webdav
-  #   container_name: webdav
-  #   restart: always
-  #   user: root
-  #   environment:
-  #     - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
-  #     - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
-  #   networks:
-  #     backend:
-  #       ipv4_address: 172.16.16.40
-  #   command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
-  #   volumes: 
-  #     - ./home/visiodesk/svg:/opt/webdav/webdav-files
-  #     - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
-  #     - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
-  #     - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
+  webdav:
+    image: jboss/wildfly
+    hostname: webdav
+    container_name: webdav
+    restart: always
+    user: root
+    environment:
+      - WEBDAV_ROOT_LOGIN=${WEBDAV_ROOT_LOGIN}
+      - WEBDAV_ROOT_PASSWORD=${WEBDAV_ROOT_PASSWORD}
+    networks:
+      - backend
+    command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --debug
+    volumes: 
+      - ./home/music:/opt/webdav/webdav-files
+      - ./conf/webdav/deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
+      - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   # dbclient:
   #   hostname: dbclient
