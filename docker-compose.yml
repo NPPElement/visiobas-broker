@@ -130,12 +130,14 @@ services:
     container_name: phpmyadmin
     environment:
     - PMA_ARBITRARY=1
+    - UPLOAD_MAX_SIZE=10G # максимальный размер загружаемого файла
+    - UPLOAD_LIMIT=50M # поможет при загрузке sql баз
     restart: always
     networks:
       - backend
     volumes:
      - /sessions
-
+    
   visiodesk:
     image: jboss/wildfly:21.0.2.Final
     hostname: visiodesk
