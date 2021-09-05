@@ -196,6 +196,15 @@ services:
       - ./conf/webdav/webdav-settings:/opt/webdav/webdav-settings
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
+  map:
+    image: overv/openstreetmap-tile-server
+    volumes:
+      - openstreetmap-data:/var/lib/postgresql/12/main
+      - /opt/zambia-latest.osm.pbf:/data.osm.pbf
+    ports:
+      - "9292:80"
+    command: "run"
+
   # dbclient:
   #   hostname: dbclient
   #   container_name: dbclient
