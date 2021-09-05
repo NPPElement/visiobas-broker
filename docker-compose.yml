@@ -198,6 +198,7 @@ services:
 
   map:
     image: overv/openstreetmap-tile-server
+    container_name: map
     volumes:
       - ./home/openstreetmap-data:/var/lib/postgresql/12/main
       #- /opt/zambia-latest.osm.pbf:/data.osm.pbf
