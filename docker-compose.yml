@@ -199,7 +199,7 @@ services:
   map:
     image: overv/openstreetmap-tile-server
     volumes:
-      - openstreetmap-data:/var/lib/postgresql/12/main
+      - ./home/openstreetmap-data:/var/lib/postgresql/12/main
       - /opt/zambia-latest.osm.pbf:/data.osm.pbf
     ports:
       - "9292:80"
