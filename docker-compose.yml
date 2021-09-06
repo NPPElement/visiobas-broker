@@ -204,8 +204,8 @@ services:
       - ./opt/zambia-latest.osm.pbf:/data.osm.pbf
     ports:
       - "9292:80"
-    #command: "run"
-    command: "import"
+    command: "run"
+    #command: "import"
 
   # dbclient:
   #   hostname: dbclient
