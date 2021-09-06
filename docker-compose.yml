@@ -201,11 +201,11 @@ services:
     container_name: map
     volumes:
       - ./home/openstreetmap-data:/var/lib/postgresql/12/main
-      - ./opt/zambia-latest.osm.pbf:/data.osm.pbf
+      - /opt/zambia-latest.osm.pbf:/data.osm.pbf
     ports:
       - "9292:80"
-    command: "run"
-    #command: "import"
+    #command: "run"
+    command: "import"
 
   # dbclient:
   #   hostname: dbclient
