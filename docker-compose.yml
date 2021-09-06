@@ -197,11 +197,10 @@ services:
       - ./log/webdav:/opt/jboss/wildfly/standalone/log/:rw
 
   map:
-    image: overv/openstreetmap-tile-server
+    image: overv/openstreetmap-tile-server:1.3.10
     container_name: map
     volumes:
       - ./home/openstreetmap-data:/var/lib/postgresql/12/main
-      #- /opt/zambia-latest.osm.pbf:/data.osm.pbf
     ports:
       - "9292:80"
     command: "run"
